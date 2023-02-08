@@ -1,3 +1,5 @@
+Require Import Unicode.Utf8.
+
 Module TuplePlayground.
 
   Inductive bit : Type :=
@@ -123,22 +125,22 @@ Proof.
   easy. Qed.
 
 
-Theorem plus_O_n : forall n : nat, 0 + n = n.
+Theorem plus_O_n : ∀ n : nat, 0 + n = n.
 Proof.
   intro n. simpl. reflexivity.
 Qed.
 
 (* Proof by rewriting *)
 
-Theorem plus_id_example : forall n m : nat, n = m -> n + n = m + m.
+Theorem plus_id_example : ∀ n m : nat, n = m → n + n = m + m.
 Proof.
   intros n m. intros H.
   rewrite -> H.
   reflexivity.
 Qed.
 
-Theorem plus_id_exercise : forall n m o : nat,
-  n = m -> m = o -> n + m = m + o.
+Theorem plus_id_exercise : ∀ n m o : nat,
+  n = m → m = o → n + m = m + o.
 Proof.
   intros n m o.
   intros H.
@@ -152,7 +154,7 @@ Check mult_n_O.
 Check mult_n_Sm.
 Check plus_n_O.
 
-Theorem mult_n_1 : forall p : nat,
+Theorem mult_n_1 : ∀ p : nat,
   p * 1 = p.
 Proof.
   intros p.
@@ -161,7 +163,7 @@ Proof.
   reflexivity.
 Qed.
 
-Theorem plus_1_neq_0_firsttry : forall n : nat,
+Theorem plus_1_neq_0_firsttry : ∀ n : nat,
   eqb (n + 1) 0 = false.
 Proof.
   intros n.
@@ -170,8 +172,8 @@ Proof.
   - reflexivity.
 Qed.
 
-Theorem andb_true_elim2 : forall b c : bool,
-  (b && c)%bool = true -> c = true.
+Theorem andb_true_elim2 : ∀ b c : bool,
+  (b && c)%bool = true → c = true.
 Proof.
   intros b c.
   destruct b.
@@ -182,14 +184,14 @@ Proof.
 Qed.
 
 
-Theorem and_true : forall a b : Prop,
-  a /\ b -> b.
+Theorem and_true : ∀ a b : Prop,
+  a ∧ b → b.
 Proof.
   intros a b. intros H.
   destruct H as [Ha Hb]. assumption.
 Qed.
 
-Theorem zero_nbeq_plus_1 : forall n : nat,
+Theorem zero_nbeq_plus_1 : ∀ n : nat,
   eqb 0 (n + 1) = false.
 Proof.
   intros [|n].
@@ -201,15 +203,15 @@ Qed.
 (* More exercises *)
 
 Theorem identity_fn_applied_twice :
-  forall (f : bool -> bool),
-  (forall (x : bool), f x = x) -> forall (b : bool), f (f b) = b.
+  ∀ (f : bool → bool),
+  (∀ (x : bool), f x = x) → ∀ (b : bool), f (f b) = b.
 Proof.
   intros. rewrite H. rewrite H. reflexivity.
 Qed.
 
 Theorem negation_fn_applied_twice :
-  forall (f : bool -> bool),
-  (forall (x : bool), f x = negb x) -> forall b, f (f b) = b.
+  ∀ (f : bool → bool),
+  (∀ (x : bool), f x = negb x) → ∀ b, f (f b) = b.
 Proof.
   intros. rewrite H. rewrite H.
   destruct b.
@@ -217,24 +219,24 @@ Proof.
   { reflexivity. }
 Qed.
 
-Lemma orb_true_l : forall b:bool, (true || b)%bool = true.
+Lemma orb_true_l : ∀ b:bool, (true || b)%bool = true.
 Proof.
   reflexivity.
 Qed.
 
-Lemma andb_true_l : forall b:bool, (true && b)%bool = b.
+Lemma andb_true_l : ∀ b:bool, (true && b)%bool = b.
 Proof. reflexivity. Qed.
 
-Lemma anbd_false_l : forall b, (false && b)%bool = false.
+Lemma anbd_false_l : ∀ b, (false && b)%bool = false.
 Proof.
   reflexivity. Qed.
 
-Lemma orb_false_l : forall b, (false || b)%bool = b.
+Lemma orb_false_l : ∀ b, (false || b)%bool = b.
 Proof. reflexivity. Qed.
 
 Theorem andb_eq_orb :
-  forall (b c : bool),
-  (andb b c = orb b c) -> b = c.
+  ∀ (b c : bool),
+  (andb b c = orb b c) → b = c.
 Proof.
   intros.
   destruct b.
