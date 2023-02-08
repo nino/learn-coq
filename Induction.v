@@ -1,4 +1,6 @@
-Theorem mul_0_r : forall n:nat,
+Require Import Unicode.Utf8.
+
+Theorem mul_0_r : ∀ n:nat,
   n * 0 = 0.
 Proof.
   intros.
@@ -7,7 +9,7 @@ Proof.
   - simpl. assumption.
 Qed.
 
-Theorem plus_n_Sm : forall n m : nat,
+Theorem plus_n_Sm : ∀ n m : nat,
   S (n + m) = n + (S m).
 Proof.
   intros n m.
@@ -17,7 +19,7 @@ Proof.
     rewrite IHn'. reflexivity.
 Qed.
 
-Lemma n_plus_0_r : forall n : nat, n + 0 = n.
+Lemma n_plus_0_r : ∀ n : nat, n + 0 = n.
 Proof.
   intros n.
   induction n as [|n' IHn'].
@@ -27,7 +29,7 @@ Qed.
 
 
 
-Theorem add_comm : forall n m : nat,
+Theorem add_comm : ∀ n m : nat,
   n + m = m + n.
 Proof.
   intros n m.
@@ -41,10 +43,10 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma n_plus_0_l : forall n : nat, 0 + n = n.
+Lemma n_plus_0_l : ∀ n : nat, 0 + n = n.
 Proof. intros. rewrite add_comm. rewrite n_plus_0_r. reflexivity. Qed.
 
-Theorem add_assoc : forall n m p : nat,
+Theorem add_assoc : ∀ n m p : nat,
   n + (m + p) = (n + m) + p.
 Proof.
   intros n m p.
@@ -57,14 +59,14 @@ Qed.
 
 Require Import Arith.
 
-Lemma example_proof : forall x y : nat,  (x + y) *(x + y)= x * x + 2 * x * y + y * y.
+Lemma example_proof : ∀ x y : nat,  (x + y) *(x + y)= x * x + 2 * x * y + y * y.
 Proof.
   intros x y.
   ring_simplify.
   reflexivity.
 Qed.
 
-Lemma not_not : forall a b : bool, negb a = negb b -> a = b.
+Lemma not_not : ∀ a b : bool, negb a = negb b → a = b.
 Proof.
   intros.
   destruct a.
@@ -84,7 +86,7 @@ Fixpoint double (n:nat) :=
   | S n' => S (S (double n'))
   end.
 
-Lemma double_plus : forall n, double n = n + n.
+Lemma double_plus : ∀ n, double n = n + n.
 Proof.
   intros n.
   induction n as [|n' IHn'].
