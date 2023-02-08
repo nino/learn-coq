@@ -55,7 +55,6 @@ Proof.
   - simpl. rewrite IHn'. reflexivity.
 Qed.
 
-
 Require Import Arith.
 
 Lemma example_proof : forall x y : nat,  (x + y) *(x + y)= x * x + 2 * x * y + y * y.
@@ -79,3 +78,19 @@ Proof.
 Qed.
 
 
+Fixpoint double (n:nat) :=
+  match n with
+  | O => O
+  | S n' => S (S (double n'))
+  end.
+
+Lemma double_plus : forall n, double n = n + n.
+Proof.
+  intros n.
+  induction n as [|n' IHn'].
+  - reflexivity.
+  - simpl.
+    rewrite <- plus_n_Sm.
+    rewrite IHn'.
+    reflexivity.
+Qed.
