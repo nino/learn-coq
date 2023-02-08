@@ -55,3 +55,27 @@ Proof.
   - simpl. rewrite IHn'. reflexivity.
 Qed.
 
+
+Require Import Arith.
+
+Lemma example_proof : forall x y : nat,  (x + y) *(x + y)= x * x + 2 * x * y + y * y.
+Proof.
+  intros x y.
+  ring_simplify.
+  reflexivity.
+Qed.
+
+Lemma not_not : forall a b : bool, negb a = negb b -> a = b.
+Proof.
+  intros.
+  destruct a.
+  - unfold negb in H.
+    destruct b.
+    + reflexivity.
+    + discriminate.
+  - destruct b.
+    + discriminate.
+    + reflexivity.
+Qed.
+
+
