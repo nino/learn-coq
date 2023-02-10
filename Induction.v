@@ -96,3 +96,39 @@ Proof.
     rewrite IHn'.
     reflexivity.
 Qed.
+
+Theorem eqb_refl : ∀ n : nat,
+  (n =? n) = true.
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - reflexivity.
+  - simpl. assumption.
+Qed.
+
+Definition even := Nat.even.
+
+Lemma cancel_negb : ∀ a b : bool, negb a = negb b -> a = b.
+Proof.
+  intros a b H.
+  destruct a as [].
+  - destruct b as [].
+    + reflexivity.
+    + discriminate.
+  - destruct b as [].
+    + discriminate.
+    + reflexivity.
+Qed.
+  
+
+Theorem even_S : ∀ n : nat,
+  even (S n) = negb (even n).
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - simpl. reflexivity.
+  - rewrite IHn'.
+    rewrite Bool.negb_involutive.
+    simpl. reflexivity.
+Qed.
+
