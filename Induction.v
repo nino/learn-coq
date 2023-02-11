@@ -119,7 +119,6 @@ Proof.
     + discriminate.
     + reflexivity.
 Qed.
-  
 
 Theorem even_S : ∀ n : nat,
   even (S n) = negb (even n).
@@ -131,4 +130,31 @@ Proof.
     rewrite Bool.negb_involutive.
     simpl. reflexivity.
 Qed.
+
+(* Exercise "destruct induction"
+
+  `destruct` works for inductive types where you don't need to do induction. Eg
+   if there is only a finite number of possible values, you can use destruct.
+
+ *)
+
+(* Not doing informal proofs here, I know how they work. *)
+
+(* More exercises *)
+
+Theorem add_shuffle3 : ∀ n m p : nat,
+  n + (m + p) = m + (n + p).
+Proof.
+  intros.
+  assert (Flip_m: m + (n + p) = (n + p) + m).
+  { rewrite Nat.add_comm. reflexivity. }
+  rewrite Flip_m.
+  assert (use_assoc: n + p + m = n + (p + m)).
+  { rewrite Nat.add_assoc. reflexivity. }
+  rewrite use_assoc.
+  assert (flip_mp: m + p = p + m).
+  { rewrite Nat.add_comm. reflexivity. }
+  rewrite flip_mp. reflexivity.
+Qed.
+
 
