@@ -157,4 +157,72 @@ Proof.
   rewrite flip_mp. reflexivity.
 Qed.
 
+Section NatToBinAndBackToNat.
 
+Inductive bin : Type :=
+  | Z
+  | B0 (n : bin)
+  | B1 (n : bin).
+
+Fixpoint incr (m:bin) : bin :=
+  match m with
+  | Z => B1 Z
+  | B0 rest => B1 rest
+  | B1 rest => B0 (incr rest)
+  end.
+
+Fixpoint bin_to_nat (m:bin) : nat :=
+  match m with
+  | Z => 0
+  | B1 rest => 1 + 2 * (bin_to_nat rest)
+  | B0 rest => 2 * (bin_to_nat rest)
+  end.
+
+Lemma S_is_plus_1_l : ∀ n, S n = 1 + n.
+Proof. intros. easy. Qed.
+
+Theorem bin_to_nat_pres_incr : ∀ b : bin,
+  bin_to_nat (incr b) = 1 + bin_to_nat b.
+Proof.
+  intros b.
+  induction b as [| b1 IH1 | b2 IH2].
+  - simpl. reflexivity.
+  - simpl. reflexivity.
+  - simpl. rewrite IH2.
+    assert (1 + bin_to_nat b2 + (1 + bin_to_nat b2 + 0) =
+      1 + bin_to_nat b2 + 1 + (bin_to_nat b2 + 0)
+    ).
+    { simpl.
+      assert (bin_to_nat b2 + 1 = S (bin_to_nat b2)).
+      { rewrite Nat.add_comm. simpl. reflexivity. }
+      rewrite H.
+      rewrite Nat.add_0_r. simpl.
+      assert (bin_to_nat b2 + S(bin_to_nat b2) = S(bin_to_nat b2 + bin_to_nat b2)).
+      { rewrite Nat.add_comm. rewrite Nat.add_succ_l. reflexivity. }
+      rewrite Nat.add_succ_r. reflexivity.
+    }
+    simpl.
+    rewrite Nat.add_0_r.
+    rewrite Nat.add_succ_r.
+    reflexivity.
+    (* I'm sure this could have been done waaaaaaaaay easier. *)
+Qed.
+
+Fixpoint nat_to_bin (n:nat) : bin :=
+  match n with
+  | O => Z
+  | S n' => incr (nat_to_bin n')
+  end.
+
+Theorem nat_bin_nat : ∀ n, bin_to_nat (nat_to_bin n) = n.
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - reflexivity.
+  - replace (nat_to_bin (S n')) with (incr (nat_to_bin n')).
+    2 : { unfold nat_to_bin. reflexivity. }
+    rewrite bin_to_nat_pres_incr.
+    rewrite IHn'. reflexivity.
+Qed.
+
+End NatToBinAndBackToNat.
