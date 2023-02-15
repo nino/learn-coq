@@ -225,4 +225,38 @@ Proof.
     rewrite IHn'. reflexivity.
 Qed.
 
+Theorem bin_nat_bin_fails : ∀ b, nat_to_bin (bin_to_nat b) = b.
+Abort. (* This fails because there are two ways of expressing zero in bin *)
+
+Lemma double_incr : ∀ n : nat, double (S n) = S (S (double n)).
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - reflexivity.
+  - unfold double. reflexivity.
+Qed.
+
+Definition double_bin (b:bin) : bin :=
+  nat_to_bin (double (bin_to_nat b)).
+
+Example double_bin_zero : double_bin Z = Z.
+Proof.
+  reflexivity.
+Qed.
+
+Lemma double_incr_bin : ∀ b,
+    double_bin (incr b) = incr (incr (double_bin b)).
+Proof.
+  intros b.
+  induction b as [| b1 IH1 | b2 IH2].
+  - reflexivity.
+  - simpl.
+    unfold double_bin.
+    replace (incr (incr (nat_to_bin (double (bin_to_nat (B0 b1))))))
+    with (nat_to_bin (S (S (double (bin_to_nat (B0 b1)))))).
+    (* 2 : { *)
+    (*   rewrite bin_to_nat_pres_incr. *)
+Admitted.
+
+
 End NatToBinAndBackToNat.
