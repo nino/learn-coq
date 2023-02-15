@@ -265,4 +265,32 @@ Proof.
   - simpl. rewrite IH. reflexivity.
 Qed.
 
+Lemma rev_cons: forall (n:nat) (l:natlist),
+  rev (n :: l) = rev l ++ [n].
+Proof.
+  intros.
+  induction l as [| h t IH].
+  - simpl. reflexivity.
+  - simpl. reflexivity.
+Qed.
 
+Lemma app_assoc: forall (A : Type) (xs ys zs : list A),
+  xs ++ (ys ++ zs) = (xs ++ ys) ++ zs.
+Proof.
+  intros.
+  induction xs as [| x xt IHx ].
+  - simpl. reflexivity.
+  - simpl. rewrite IHx. reflexivity.
+Qed.
+
+Theorem rev_app_distr: ∀ l1 l2 : natlist,
+  rev (l1 ++ l2) = rev l2 ++ rev l1.
+Proof.
+  intros l1 l2.
+  induction l1 as [| n l1' IHl1'].
+  - simpl.
+    rewrite app_nil_r.
+    reflexivity.
+  - simpl. rewrite IHl1'.
+    simpl. rewrite app_assoc. reflexivity.
+Qed.
