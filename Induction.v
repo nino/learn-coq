@@ -119,7 +119,6 @@ Proof.
     + discriminate.
     + reflexivity.
 Qed.
-  
 
 Theorem even_S : ∀ n : nat,
   even (S n) = negb (even n).
