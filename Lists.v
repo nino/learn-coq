@@ -1,3 +1,5 @@
+Require Import Unicode.Utf8.
+
 Inductive natprod :=
   | pair (n1 n2 : nat).
 
@@ -253,4 +255,14 @@ Proof.
   simpl.
   reflexivity.
 Qed.
+
+Theorem app_nil_r : ∀ l : natlist,
+  l ++ [] = l.
+Proof.
+  intros l.
+  induction l as [| n l IH].
+  - reflexivity.
+  - simpl. rewrite IH. reflexivity.
+Qed.
+
 
