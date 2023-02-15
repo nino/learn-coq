@@ -6,7 +6,7 @@ Notation "( x , y )" := (pair x y).
 Definition fst pair := match pair with
   | (x, y) => x
   end.
-  
+
 Definition snd pair := match pair with (x, y) => y end.
 
 Theorem surjective_pairing' : forall (n m : nat),
@@ -51,7 +51,7 @@ Fixpoint nonzeros (l:natlist) : natlist :=
       then h :: (nonzeros t)
       else (nonzeros t)
  end.
- 
+
 Compute (nonzeros (1 :: 2 :: 0 :: 10 :: 0 :: nil)).
 
 Example test_nonzeros:
@@ -61,7 +61,7 @@ Proof. trivial. Qed.
 Fixpoint filter (f : nat -> bool) (l : natlist) : natlist :=
   match l with
   | nil => nil
-  | h :: t => if f h 
+  | h :: t => if f h
     then h :: (filter f t)
     else filter f t
   end.
@@ -84,4 +84,29 @@ Proof.
   - unfold existsb.
   (* I'll need to know more to be able to finish this. *)
   Admitted.
-  
+
+Fixpoint length {A: Type} (l : list A) := match l with
+  | nil => 0
+  | cons hd tl => S (length tl)
+  end.
+
+Definition countoddmembers (l:natlist) : nat :=
+  length (oddmembers l).
+
+Example test_countoddmembers1:
+  countoddmembers [1;0;3;1;4;5] = 4.
+Proof.
+  reflexivity.
+Qed.
+
+Example test_countoddmembers2:
+  countoddmembers [0;2;4] = 0.
+Proof.
+  reflexivity.
+Qed.
+
+Example test_countoddmembers3:
+  countoddmembers nil = 0.
+Proof.
+  reflexivity.
+Qed.
