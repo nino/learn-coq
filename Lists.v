@@ -294,3 +294,14 @@ Proof.
   - simpl. rewrite IHl1'.
     simpl. rewrite app_assoc. reflexivity.
 Qed.
+
+Theorem rev_involutive : ∀ l : natlist,
+  rev (rev l) = l.
+Proof.
+  intros.
+  induction l as [| h t IH].
+  - simpl. reflexivity.
+  - simpl. rewrite rev_app_distr. simpl.
+    rewrite IH.
+    reflexivity.
+Qed.
