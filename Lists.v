@@ -312,3 +312,16 @@ Proof.
   intros.
   rewrite app_assoc. rewrite app_assoc. reflexivity.
 Qed.
+
+Lemma nonzeros_app : ∀ l1 l2 : natlist,
+  nonzeros (l1 ++ l2) = (nonzeros l1) ++ (nonzeros l2).
+Proof.
+  intros.
+  induction l1 as [| h t IH].
+  - simpl. reflexivity.
+  - simpl.
+    rewrite IH.
+    destruct (negb (Nat.eqb h 0)).
+    + simpl. reflexivity.
+    + reflexivity.
+Qed.
