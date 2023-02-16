@@ -1,4 +1,5 @@
 Require Import Unicode.Utf8.
+Require Import List.
 
 Inductive natprod :=
   | pair (n1 n2 : nat).
@@ -378,62 +379,61 @@ Proof.
   simpl. reflexivity.
 Qed.
 
+Lemma different_length_implies_not_equal: forall (A : Type) (xs ys : list A),
+  Nat.eqb (length xs) (length ys) = false ->  xs <> ys.
+Proof.
+  intros.
+  intros contra.
+  apply (f_equal (@length A)) in contra.
+  apply PeanoNat.Nat.eqb_eq in contra.
+  rewrite H in contra. discriminate contra.
+Qed.
+
+Lemma succ_not_same: forall n, S n <> n.
+Proof.
+  intros.
+  intros contra.
+  induction n.
+  - discriminate.
+  - apply (f_equal pred) in contra.
+    rewrite PeanoNat.Nat.pred_succ in contra.
+    rewrite PeanoNat.Nat.pred_succ in contra.
+    contradict IHn. assumption.
+Qed.
+
 Lemma cons_l_neq_l: forall (A : Type) (l : list A) (el : A),
   el :: l ≠ l.
 Proof.
   intros.
-  induction l as [| h t IH].
+  destruct l.
   - intros contra.
     apply (f_equal length) in contra.
-    assert (l := @nil A).
-    {
-      discriminate.
-    }
+    discriminate contra.
   - intros contra.
-Abort.
-
-
+    replace (a :: l) with ([a] ++ l) in contra.
+    2: { unfold app. reflexivity. }
+    apply (f_equal (@List.length A)) in contra.
+    simpl in contra.
+    apply succ_not_same in contra.
+    contradiction.
+Qed.
 
 Lemma actual_member_count_nonzero: ∀ (s : bag) (n : nat),
   member n s = true -> Nat.leb 1 (count n s) = true.
 Proof.
   intros.
   simpl.
-  induction s as [| h s' IHs'] eqn:Eq.
+  induction s as [| v s' IHs'].
   - simpl. discriminate.
-  - assert (s ≠ s').
-    {
-      rewrite Eq.
-
-
-(* Lemma eqb_comm : ∀ n m, Nat.eqb n m = Nat.eqb m n. *)
-(* Proof. *)
-(*   intros n m. *)
-(*   destruct (Nat.eqb n m) eqn:E1. *)
-(*   - destruct (Nat.eqb m n) eqn:E2. *)
-(*     + reflexivity. *)
-(*     + *) 
-
-Theorem remove_does_not_increase_count: ∀ (s : bag),
-  Nat.leb (count 1 (remove_one 1 s)) (count 1 s) = true.
-Proof.
-  intros s.
-  
-Abort.
-
-
-  (* destruct (count n s) eqn:C. *)
-  (* - induction s as [| h t IH]. *)
-  (*   + simpl. reflexivity. *)
-  (*   + simpl. *)
-  (*     simpl in C. *)
-  (*     assert (n_not_h: Nat.eqb n h = false). *)
-  (*     { *)
-  (*       destruct (Nat.eqb n h). *)
-  (*       - discriminate. *)
-  (*       - reflexivity. *)
-  (*     } *)
-  (*     rewrite n_not_h in C. *)
-  (*     simpl in C. *)
-      
+  - simpl.
+    simpl in H.
+    rewrite PeanoNat.Nat.eqb_sym.
+    destruct (PeanoNat.Nat.eqb v n) eqn:Equality.
+    + simpl. reflexivity.
+    + simpl in H.
+      simpl.
+      rewrite IHs'.
+      * reflexivity.
+      * assumption.
+Qed.
 
