@@ -325,3 +325,115 @@ Proof.
     + simpl. reflexivity.
     + reflexivity.
 Qed.
+
+Fixpoint eqblist (l1 l2 : natlist) : bool :=
+  match l1, l2 with
+  | nil, nil => true
+  | nil, _ => false
+  | _, nil => false
+  | h1 :: t1, h2 :: t2 => andb (Nat.eqb h1 h2) (eqblist t1 t2)
+  end.
+
+Example test_eqblist1 :
+  (eqblist nil nil = true).
+Proof.
+  reflexivity.
+Qed.
+
+Example test_eqblist2 :
+  eqblist [1;2;3] [1;2;3] = true.
+Proof. reflexivity. Qed.
+
+Example test_eqblist3 :
+  eqblist [1;2;3] [1;2;4] = false.
+Proof. reflexivity. Qed.
+
+Theorem eqblist_refl : ∀ l:natlist,
+  true = eqblist l l.
+Proof.
+  intro l.
+  induction l as [| h t IH].
+  - reflexivity.
+  - simpl. rewrite <- IH.
+    rewrite eqb_is_eq.
+    simpl. reflexivity.
+Qed.
+
+Theorem leb_n_Sn : ∀ n,
+  Nat.leb n (S n) = true.
+Proof.
+  intros n. induction n as [| n' IHn'].
+  - (* 0 *)
+    simpl. reflexivity.
+  - (* S n' *)
+    simpl. rewrite IHn'. reflexivity.
+Qed.
+
+Theorem count_member_nonzero : ∀ (s : bag) (n : nat),
+  Nat.leb 1 (count n (n :: s)) = true.
+Proof.
+  intros s n.
+  simpl.
+  rewrite eqb_is_eq.
+  simpl. reflexivity.
+Qed.
+
+Lemma cons_l_neq_l: forall (A : Type) (l : list A) (el : A),
+  el :: l ≠ l.
+Proof.
+  intros.
+  induction l as [| h t IH].
+  - intros contra.
+    apply (f_equal length) in contra.
+    assert (l := @nil A).
+    {
+      discriminate.
+    }
+  - intros contra.
+Abort.
+
+
+
+Lemma actual_member_count_nonzero: ∀ (s : bag) (n : nat),
+  member n s = true -> Nat.leb 1 (count n s) = true.
+Proof.
+  intros.
+  simpl.
+  induction s as [| h s' IHs'] eqn:Eq.
+  - simpl. discriminate.
+  - assert (s ≠ s').
+    {
+      rewrite Eq.
+
+
+(* Lemma eqb_comm : ∀ n m, Nat.eqb n m = Nat.eqb m n. *)
+(* Proof. *)
+(*   intros n m. *)
+(*   destruct (Nat.eqb n m) eqn:E1. *)
+(*   - destruct (Nat.eqb m n) eqn:E2. *)
+(*     + reflexivity. *)
+(*     + *) 
+
+Theorem remove_does_not_increase_count: ∀ (s : bag),
+  Nat.leb (count 1 (remove_one 1 s)) (count 1 s) = true.
+Proof.
+  intros s.
+  
+Abort.
+
+
+  (* destruct (count n s) eqn:C. *)
+  (* - induction s as [| h t IH]. *)
+  (*   + simpl. reflexivity. *)
+  (*   + simpl. *)
+  (*     simpl in C. *)
+  (*     assert (n_not_h: Nat.eqb n h = false). *)
+  (*     { *)
+  (*       destruct (Nat.eqb n h). *)
+  (*       - discriminate. *)
+  (*       - reflexivity. *)
+  (*     } *)
+  (*     rewrite n_not_h in C. *)
+  (*     simpl in C. *)
+      
+
