@@ -305,3 +305,10 @@ Proof.
     rewrite IH.
     reflexivity.
 Qed.
+
+Theorem app_assoc4 : ∀ l1 l2 l3 l4 : natlist,
+  l1 ++ (l2 ++ (l3 ++ l4)) = ((l1 ++ l2) ++ l3) ++ l4.
+Proof.
+  intros.
+  rewrite app_assoc. rewrite app_assoc. reflexivity.
+Qed.
