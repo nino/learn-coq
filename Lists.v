@@ -1,6 +1,9 @@
 Require Import Unicode.Utf8.
 Require Import List.
 
+Notation "x =? y" := (Nat.eqb x y) (at level 70) : nat_scope.
+Notation "x <=? y" := (Nat.leb x y) (at level 70) : nat_scope.
+
 Inductive natprod :=
   | pair (n1 n2 : nat).
 
@@ -437,3 +440,111 @@ Proof.
       * assumption.
 Qed.
 
+Lemma less_than_succ: forall (n : nat),
+  n <=? S n = true.
+Proof.
+  intros n.
+  induction n as [| n' IH].
+  - simpl. reflexivity.
+  - simpl. rewrite IH. reflexivity.
+Qed.
+
+Theorem remove_does_not_increase_count: ∀ (s : bag) (n : nat),
+  (count n (remove_one n s)) <=? (count n s) = true.
+Proof.
+  intros s n.
+  induction s as [| h t IH].
+  - simpl. reflexivity.
+  - simpl.
+    destruct (h =? n) eqn:Eq.
+    {
+      (* If h = n *)
+      rewrite PeanoNat.Nat.eqb_sym.
+      rewrite Eq.
+      simpl.
+      rewrite less_than_succ.
+      reflexivity.
+    }
+    {
+      (* If h ≠ n *)
+      rewrite PeanoNat.Nat.eqb_sym.
+      rewrite Eq.
+      simpl.
+      rewrite PeanoNat.Nat.eqb_sym.
+      rewrite Eq.
+      simpl.
+      rewrite IH.
+      reflexivity.
+    }
+Qed.
+
+(* Lemma sum_comm: forall (x y : bag) (n : nat), *)
+(*   count n (sum x y) =? count n (sum y x) = true. *)
+(* Proof. *)
+(*   intros x y n. *)
+(*   induction x as [| hx tx IHx] eqn:Eqx. *)
+(*   - simpl. *)
+(*     replace (sum y [ ]) with y. *)
+(*     2: { *)
+(*       unfold sum. *)
+(*       unfold alternate. *)
+(*       destruct y; reflexivity. *)
+(*     } *)
+(*     rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
+(*   - simpl. *)
+(*     destruct y. *)
+(*     + simpl. *)
+(*       destruct (if n =? hx then 1 else 0); *)
+(*       simpl; rewrite PeanoNat.Nat.eqb_eq; reflexivity. *)
+(*     + simpl. *)
+(*       destruct (if n =? hx then 1 else 0). *)
+(*       * simpl. *)
+(*         destruct (if n =? n0 then 1 else 0). *)
+(*         -- simpl. *)
+(*            replace (x = tx) with False in IHx. *)
+(*            2: { *)
+(*              assert (x ≠ tx). *)
+(*              { *)
+(*                rewrite Eqx. *)
+(*                apply   cons_l_neq_l. *)
+(*            } *)
+             
+(*                rewrite <- not_eq_sym. *)
+(*   rewrite <- nil_cons. *)
+(*   rewrite <- app_nil_end. *)
+(*   reflexivity. *)
+
+(* Theorem bag_count_sum: forall (x y : bag) (n : nat), *)
+(*   count n (sum x y) =? (count n x) + (count n y) = true. *)
+(* Proof. *)
+(*   intros x y n. *)
+(*   induction x as [| hx tx IHx]. *)
+(*   - simpl. rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
+(*   - simpl. *)
+(*     induction y as [| hy ty IHy]. *)
+(*     + simpl. *)
+(*       destruct (if n =? hx then 1 else 0) eqn:Eq. *)
+(*       { *)
+(*         simpl. *)
+(*         rewrite PeanoNat.Nat.add_0_r. *)
+(*         rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
+(*       } *)
+(*       { *)
+(*         simpl. *)
+(*         rewrite PeanoNat.Nat.add_0_r. *)
+(*         rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
+(*       } *)
+(*     + simpl. *)
+(*       rewrite PeanoNat.Nat.eqb_eq. *)
+(*       destruct (n =? hx) eqn:n_eq_hx. *)
+(*       { *)
+(*         simpl. *)
+(*         destruct (n =? hy) eqn:n_eq_hy. *)
+(*         { *)
+(*           simpl. *)
+(*           simpl in IHx. *)
+(*           rewrite n_eq_hy in IHx. *)
+(*           simpl in IHx. *)
+(*           rewrite PeanoNat.Nat.eqb_eq in IHx. *)
+(*           rewrite <- IHx. *)
+          
