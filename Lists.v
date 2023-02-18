@@ -499,3 +499,13 @@ Proof.
   rewrite <- H in H0.
   assumption.
 Qed.
+
+Theorem rev_injective : ∀ (l1 l2 : natlist),
+  rev l1 = rev l2 → l1 = l2.
+Proof.
+  intros.
+  apply (f_equal (@rev nat)) in H.
+  rewrite rev_involutive in H.
+  rewrite rev_involutive in H.
+  assumption.
+Qed.
