@@ -17,8 +17,7 @@ Definition snd pair := match pair with (x, y) => y end.
 
 Theorem surjective_pairing' : forall (n m : nat),
   (n,m) = (fst (n,m), snd (n,m)).
-Proof.
-  reflexivity. Qed.
+Proof. reflexivity. Qed.
 
 Theorem surjective_pairing_stuck : forall (p : natprod),
   p = (fst p, snd p).
@@ -101,21 +100,15 @@ Definition countoddmembers (l:natlist) : nat :=
 
 Example test_countoddmembers1:
   countoddmembers [1;0;3;1;4;5] = 4.
-Proof.
-  reflexivity.
-Qed.
+Proof. reflexivity. Qed.
 
 Example test_countoddmembers2:
   countoddmembers [0;2;4] = 0.
-Proof.
-  reflexivity.
-Qed.
+Proof. reflexivity. Qed.
 
 Example test_countoddmembers3:
   countoddmembers nil = 0.
-Proof.
-  reflexivity.
-Qed.
+Proof. reflexivity. Qed.
 
 Fixpoint alternate (l1 l2 : natlist) : natlist :=
   match l1, l2 with
@@ -478,73 +471,21 @@ Proof.
     }
 Qed.
 
-(* Lemma sum_comm: forall (x y : bag) (n : nat), *)
-(*   count n (sum x y) =? count n (sum y x) = true. *)
-(* Proof. *)
-(*   intros x y n. *)
-(*   induction x as [| hx tx IHx] eqn:Eqx. *)
-(*   - simpl. *)
-(*     replace (sum y [ ]) with y. *)
-(*     2: { *)
-(*       unfold sum. *)
-(*       unfold alternate. *)
-(*       destruct y; reflexivity. *)
-(*     } *)
-(*     rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
-(*   - simpl. *)
-(*     destruct y. *)
-(*     + simpl. *)
-(*       destruct (if n =? hx then 1 else 0); *)
-(*       simpl; rewrite PeanoNat.Nat.eqb_eq; reflexivity. *)
-(*     + simpl. *)
-(*       destruct (if n =? hx then 1 else 0). *)
-(*       * simpl. *)
-(*         destruct (if n =? n0 then 1 else 0). *)
-(*         -- simpl. *)
-(*            replace (x = tx) with False in IHx. *)
-(*            2: { *)
-(*              assert (x ≠ tx). *)
-(*              { *)
-(*                rewrite Eqx. *)
-(*                apply   cons_l_neq_l. *)
-(*            } *)
-             
-(*                rewrite <- not_eq_sym. *)
-(*   rewrite <- nil_cons. *)
-(*   rewrite <- app_nil_end. *)
-(*   reflexivity. *)
+Lemma sum_with_nil: forall l,
+  sum l [] = l.
+Proof.
+  intros.
+  induction l; reflexivity.
+Qed.
 
-(* Theorem bag_count_sum: forall (x y : bag) (n : nat), *)
-(*   count n (sum x y) =? (count n x) + (count n y) = true. *)
-(* Proof. *)
-(*   intros x y n. *)
-(*   induction x as [| hx tx IHx]. *)
-(*   - simpl. rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
-(*   - simpl. *)
-(*     induction y as [| hy ty IHy]. *)
-(*     + simpl. *)
-(*       destruct (if n =? hx then 1 else 0) eqn:Eq. *)
-(*       { *)
-(*         simpl. *)
-(*         rewrite PeanoNat.Nat.add_0_r. *)
-(*         rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
-(*       } *)
-(*       { *)
-(*         simpl. *)
-(*         rewrite PeanoNat.Nat.add_0_r. *)
-(*         rewrite PeanoNat.Nat.eqb_eq. reflexivity. *)
-(*       } *)
-(*     + simpl. *)
-(*       rewrite PeanoNat.Nat.eqb_eq. *)
-(*       destruct (n =? hx) eqn:n_eq_hx. *)
-(*       { *)
-(*         simpl. *)
-(*         destruct (n =? hy) eqn:n_eq_hy. *)
-(*         { *)
-(*           simpl. *)
-(*           simpl in IHx. *)
-(*           rewrite n_eq_hy in IHx. *)
-(*           simpl in IHx. *)
-(*           rewrite PeanoNat.Nat.eqb_eq in IHx. *)
-(*           rewrite <- IHx. *)
-          
+Lemma count_with_cons: forall (l : bag) (n : nat),
+  count n (n :: l) = S (count n l).
+Proof.
+  intros.
+  simpl.
+  assert (refl: n = n).
+  { reflexivity. }
+  rewrite <- PeanoNat.Nat.eqb_eq in refl.
+  rewrite refl.
+  simpl. reflexivity.
+Qed.
