@@ -489,3 +489,13 @@ Proof.
   rewrite refl.
   simpl. reflexivity.
 Qed.
+
+Theorem involution_injective : ∀ (f : nat → nat),
+    (∀ n : nat, n = f (f n)) → (∀ n1 n2 : nat, f n1 = f n2 → n1 = n2).
+Proof.
+  intros.
+  apply (f_equal f) in H0.
+  rewrite <- H in H0.
+  rewrite <- H in H0.
+  assumption.
+Qed.
