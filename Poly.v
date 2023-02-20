@@ -96,4 +96,41 @@ Proof.
     reflexivity.
 Qed.
 
+Inductive prod (X Y : Type) :=
+  | pair (x : X) (y : Y).
+
+Arguments pair {X} {Y}.
+Notation "( x , y )" := (pair x y).
+
+Notation "X * Y" := (prod X Y) : type_scope.
+
+Definition fst {X Y : Type} (p : X * Y) : X :=
+  match p with
+  | (x, _) => x
+  end.
+
+Definition snd {X Y : Type} (p : X * Y) : Y :=
+  match p with
+  | (_, y) => y
+  end.
+
+Fixpoint combine {X Y : Type } (lx : list X) (ly : list Y) : list (X * Y) :=
+  match lx, ly with
+  | [], _ => []
+  | _, [] => []
+  | x :: tx, y :: ty => (x, y) :: (combine tx ty)
+  end.
+
+Fixpoint map {X Y : Type} (f : X → Y) (l : list X) : list Y :=
+  match l with
+  | nil => nil
+  | cons h t => (f h) :: (map f t)
+  end.
+
+Definition split {X Y : Type} (l : list (X * Y)) : (list X) * (list Y) :=
+  ((map fst l), (map snd l)).
+
+Example test_split:
+  split [(1,false);(2,false)] = ([1;2],[false;false]).
+Proof. reflexivity. Qed.
 
