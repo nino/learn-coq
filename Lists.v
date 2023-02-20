@@ -509,3 +509,74 @@ Proof.
   rewrite rev_involutive in H.
   assumption.
 Qed.
+
+Inductive natoption : Type :=
+  | Some (n : nat)
+  | None.
+
+Fixpoint nth_error (l:natlist) (n:nat) : natoption :=
+  match l with
+  | nil => None
+  | a :: l' => match n with
+               | O => Some a
+               | S n' => nth_error l' n'
+               end
+  end.
+
+Example test_nth_error1 : nth_error [4;5;6;7] 0 = Some 4.
+Proof. reflexivity. Qed.
+
+Example test_nth_error2 : nth_error [4;5;6;7] 3 = Some 7.
+Proof. reflexivity. Qed.
+
+Example test_nth_error3 : nth_error [4;5;6;7] 9 = None.
+Proof. reflexivity. Qed.
+
+Definition option_elim (d : nat) (o : natoption) : nat :=
+  match o with
+  | Some n' => n'
+  | None => d
+  end.
+
+Definition hd_error (l : natlist) : natoption :=
+  match l with
+  | nil => None
+  | h :: _ => Some h
+  end.
+
+Example test_hd_error1 : hd_error [] = None.
+Proof. reflexivity. Qed.
+
+Example test_hd_error2 : hd_error [1] = Some 1.
+Proof. reflexivity. Qed.
+
+Example test_hd_error3 : hd_error [5;6] = Some 5.
+Proof. reflexivity. Qed.
+
+Theorem option_elim_hd : ∀ (l:natlist) (default:nat),
+  hd default l = option_elim default (hd_error l).
+Proof.
+  intros.
+  destruct l as [| h t]; simpl; reflexivity.
+Qed.
+
+(* Partial maps *)
+
+Inductive id : Type :=
+  | Id (n : nat).
+
+Definition eqb_id (x1 x2 : id) :=
+  match x1, x2 with
+  | Id n1, Id n2 => n1 =? n2
+  end.
+
+Theorem eqb_id_refl : ∀ x:id, eqb_id x x = true.
+Proof.
+  intros x.
+  destruct x.
+  simpl.
+  rewrite PeanoNat.Nat.eqb_eq.
+  reflexivity.
+Qed.
+
+
