@@ -134,3 +134,85 @@ Example test_split:
   split [(1,false);(2,false)] = ([1;2],[false;false]).
 Proof. reflexivity. Qed.
 
+Module OptionPlayground.
+
+  Inductive option (X:Type) : Type :=
+    | Some (x : X)
+    | None.
+
+  Arguments Some {X}.
+  Arguments None {X}.
+
+  Definition hd_error {X : Type} (l : list X) : option X :=
+    match l with
+    | nil => None
+    | cons h _ => Some h
+    end.
+
+End OptionPlayground.
+
+Section OtherCrap.
+
+Require Import Reals.
+Require Import Lia.
+Require Import Lra.
+
+Check Rmult_le_compat_l.
+
+Lemma lessthanthing : ∀ (n : nat),
+  (1 <= 1.5^n)%R.
+Proof.
+  intros.
+  induction n.
+  - intuition.
+  - simpl.
+    apply (Rmult_le_compat_l 1.5) in IHn.
+    2: { lra. }
+    rewrite Rmult_1_r in IHn.
+    lra.
+Qed.
+
+End OtherCrap.
+
+Fixpoint filter {X:Type} (test: X → bool) (l:list X) : list X :=
+  match l with
+  | [] => []
+  | h :: t =>
+    if test h then h :: (filter test t)
+    else filter test t
+  end.
+
+Definition partition
+  {X : Type}
+  (test : X → bool)
+  (l : list X)
+  : list X * list X :=
+  (filter test l, filter (fun e => negb (test e)) l).
+
+Example test_partition1: partition Nat.odd [1;2;3;4;5] = ([1;3;5], [2;4]).
+Proof. reflexivity. Qed.
+
+Example test_partition2: partition (fun x => false) [5;9;0] = ([], [5;9;0]).
+Proof. reflexivity. Qed.
+
+Lemma map_app : ∀ (X Y : Type) (f : X → Y) (l1 l2 : list X),
+  (map f l1) ++ (map f l2) = map f (l1 ++ l2).
+Proof.
+  intros.
+  induction l1.
+  - simpl. reflexivity.
+  - simpl. rewrite IHl1. reflexivity.
+Qed.
+
+Theorem map_rev : ∀ (X Y : Type) (f : X → Y) (l : list X),
+  map f (rev l) = rev (map f l).
+Proof.
+  intros.
+  induction l.
+  - reflexivity.
+  - simpl.
+    rewrite <- map_app.
+    rewrite IHl.
+    reflexivity.
+Qed.
+
