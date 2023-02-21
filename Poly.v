@@ -216,3 +216,14 @@ Proof.
     reflexivity.
 Qed.
 
+Fixpoint flatten {X : Type} (l: list (list X)) : list X :=
+  match l with
+  | nil => nil
+  | h :: t => h ++ (flatten t)
+  end.
+
+Definition flat_map {X Y: Type} (f: X → list Y) (l: list X) : list Y :=
+  flatten (map f l).
+
+
+
