@@ -291,5 +291,13 @@ Module Exercises.
     reflexivity.
   Qed.
 
+  Theorem curry_uncurry : ∀ (X Y Z : Type) (f : (X * Y) → Z) (p : X * Y),
+    prod_uncurry (prod_curry f) p = f p.
+  Proof.
+    intros.
+    unfold prod_uncurry.
+    unfold prod_curry.
+    destruct p; reflexivity.
+
 End Exercises.
 
