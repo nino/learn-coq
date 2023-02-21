@@ -236,11 +236,60 @@ Definition option_map {X Y : Type} (f : X → Y) (xo : option X)
   | Some x => Some (f x)
   end.
 
-Fixpoint fold {X Y: Type} (f : X→Y→Y) (l : list X) (b : Y)
-                         : Y :=
+Fixpoint fold {X Y: Type} (f : X → Y → Y) (l : list X) (b : Y) : Y :=
   match l with
   | nil => b
   | h :: t => f h (fold f t b)
   end.
 
+Module Exercises.
+
+  (* map in terms of fold *)
+  Definition fold_map {X Y: Type} (f: X → Y) (l: list X) : list Y :=
+    fold (fun el acc => [f el] ++ acc) l [].
+
+  Example test_map1: fold_map (fun x => plus 3 x) [2;0;2] = [5;3;5].
+  Proof. reflexivity. Qed.
+
+
+  Example test_map2:
+    fold_map Nat.odd [2;1;2;5] = [false;true;false;true].
+  Proof. reflexivity. Qed.
+
+  Example test_map3:
+    fold_map (fun n => [Nat.even n; Nat.odd n]) [2;1;2;5]
+    = [[true;false];[false;true];[true;false];[false;true]].
+  Proof. reflexivity. Qed.
+
+  Theorem fold_map_correct : ∀ {X Y : Type} (f : X → Y) (l : list X),
+    fold_map f l = map f l.
+  Proof.
+    intros.
+    induction l.
+    - simpl. reflexivity.
+    - simpl.
+      rewrite <- IHl.
+      reflexivity.
+  Qed.
+
+  Definition prod_curry
+    {X Y Z : Type} (f : X * Y → Z) (x : X) (y : Y) : Z :=
+    f (x, y).
+
+  Definition prod_uncurry
+    {X Y Z : Type} (f : X → Y → Z) (p : X * Y) : Z :=
+    match p with
+    | (x, y) => f x y
+    end.
+
+  Theorem uncurry_curry : ∀ (X Y Z : Type) (f : X → Y → Z) x y,
+    prod_curry (prod_uncurry f) x y = f x y.
+  Proof.
+    intros.
+    unfold prod_curry.
+    unfold prod_uncurry.
+    reflexivity.
+  Qed.
+
+End Exercises.
 
