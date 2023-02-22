@@ -1,4 +1,7 @@
 Require Import Unicode.Utf8.
+Require Import Reals.
+Require Import Lia.
+Require Import Lra.
 
 Inductive list (X : Type) : Type :=
   | nil
@@ -152,10 +155,6 @@ End OptionPlayground.
 
 Section OtherCrap.
 
-Require Import Reals.
-Require Import Lia.
-Require Import Lra.
-
 Check Rmult_le_compat_l.
 
 Lemma lessthanthing : ∀ (n : nat),
@@ -298,6 +297,36 @@ Module Exercises.
     unfold prod_uncurry.
     unfold prod_curry.
     destruct p; reflexivity.
+  Qed.
+
+  Fixpoint nth_error {X : Type} (l : list X) (n : nat) : option X :=
+    match l with
+    | [] => None
+    | a :: l' => if Nat.eqb n O then Some a else nth_error l' (pred n)
+    end.
+
+  Lemma length_of_cons_neq_0 : ∀ (X : Type) (l : list X) (el : X),
+    (@length X (el :: l)) ≠ 0.
+  Admitted.
+
+  (* Lemma if_length_h_t_is_n_then_length_t_is_pred_n: ∀ (X : Type) (h : X) (t : list X), *)
+  (*   @length X ( *)
+
+  Theorem nth_error_informal_but_not_really : ∀ (X : Type) (l : list X) (n : nat),
+    @length X l = n → @nth_error X l n = None.
+  Proof.
+    intros.
+    induction l.
+    - simpl. reflexivity.
+    - simpl.
+      assert (length (x :: l) ≠ 0).
+      { apply length_of_cons_neq_0. }
+      rewrite H in H0.
+      rewrite <- PeanoNat.Nat.eqb_neq in H0.
+      rewrite H0.
+  Admitted.
+  (* They said to do it informally. I tried to do it formally, but couldn't do
+   * it. *)
 
 End Exercises.
 
