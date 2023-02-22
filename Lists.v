@@ -552,12 +552,12 @@ Definition eqb_id (x1 x2 : id) :=
   | Id n1, Id n2 => n1 =? n2
   end.
 
-Theorem eqb_id_refl : ∀ x, eqb_id x x = true.
+Theorem eqb_id_refl : ∀ x:id, eqb_id x x = true.
 Proof.
-  intros.
+  intros x.
   destruct x.
   simpl.
-  rewrite eqb_with_self_if_true.
+  rewrite PeanoNat.Nat.eqb_eq.
   reflexivity.
 Qed.
 
@@ -565,34 +565,33 @@ Inductive partial_map : Type :=
   | empty
   | record (i : id) (v : nat) (m : partial_map).
 
-Definition update (d : partial_map)
-                  (x : id) (value : nat)
-                  : partial_map :=
+Definition update (d : partial_map) (x : id) (value : nat) : partial_map :=
   record x value d.
 
 Fixpoint find (x : id) (d : partial_map) : natoption :=
   match d with
   | empty => None
-  | record y v d' => if eqb_id x y
-                     then Some v
-                     else find x d'
+  | record y v d' =>
+      if eqb_id x y
+      then Some v
+      else find x d'
   end.
 
 Theorem update_eq :
-  ∀ (d : partial_map) (x : id) (v: nat),
-    find x (update d x v) = Some v.
+  ∀ (d : partial_map) (x : id) (v : nat),
+  find x (update d x v) = Some v.
 Proof.
-  intros.
+  intros d x v.
   simpl.
   rewrite eqb_id_refl.
   reflexivity.
 Qed.
 
 Theorem update_neq :
-  ∀ (d : partial_map) (x y : id) (o: nat),
-    eqb_id x y = false → find x (update d y o) = find x d.
+  ∀ (d : partial_map) (x y : id) (o : nat),
+  eqb_id x y = false → find x (update d y o) = find x d.
 Proof.
-  intros.
+  intros d x y o H.
   simpl.
   rewrite H.
   reflexivity.
@@ -601,3 +600,8 @@ Qed.
 Inductive baz : Type :=
   | Baz1 (x : baz)
   | Baz2 (y : baz) (b : bool).
+
+(* How many elements does the type `baz` have?
+
+   I'm not sure I understand the question. *)
+
