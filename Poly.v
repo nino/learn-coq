@@ -36,11 +36,11 @@ Fixpoint length {X : Type} (l : list X) : nat :=
   end.
 
 Notation "x :: y" := (cons x y)
-                     (at level 60, right associativity).
+  (at level 60, right associativity).
 Notation "[ ]" := nil.
 Notation "[ x ; .. ; y ]" := (cons x .. (cons y []) ..).
 Notation "x ++ y" := (app x y)
-                     (at level 60, right associativity).
+  (at level 60, right associativity).
 
 Theorem app_nil_r : ∀ (X : Type), ∀ l : list X,
   l ++ [] = l.
@@ -155,20 +155,20 @@ End OptionPlayground.
 
 Section OtherCrap.
 
-Check Rmult_le_compat_l.
+  Check Rmult_le_compat_l.
 
-Lemma lessthanthing : ∀ (n : nat),
-  (1 <= 1.5^n)%R.
-Proof.
-  intros.
-  induction n.
-  - intuition.
-  - simpl.
-    apply (Rmult_le_compat_l 1.5) in IHn.
-    2: { lra. }
-    rewrite Rmult_1_r in IHn.
-    lra.
-Qed.
+  Lemma lessthanthing : ∀ (n : nat),
+    (1 <= 1.5^n)%R.
+  Proof.
+    intros.
+    induction n.
+    - intuition.
+    - simpl.
+      apply (Rmult_le_compat_l 1.5) in IHn.
+      2: { lra. }
+      rewrite Rmult_1_r in IHn.
+      lra.
+  Qed.
 
 End OtherCrap.
 
@@ -176,8 +176,8 @@ Fixpoint filter {X:Type} (test: X → bool) (l:list X) : list X :=
   match l with
   | [] => []
   | h :: t =>
-    if test h then h :: (filter test t)
-    else filter test t
+      if test h then h :: (filter test t)
+      else filter test t
   end.
 
 Definition partition
@@ -229,7 +229,7 @@ Example test_flat_map1:
 Proof. reflexivity. Qed.
 
 Definition option_map {X Y : Type} (f : X → Y) (xo : option X)
-                      : option Y :=
+  : option Y :=
   match xo with
   | None => None
   | Some x => Some (f x)
@@ -328,83 +328,87 @@ Module Exercises.
   (* They said to do it informally. I tried to do it formally, but couldn't do
    * it. *)
 
-Module Church.
+  Module Church.
 
-  Definition cnat := ∀ X : Type, (X → X) → X → X.
+    Definition cnat := ∀ X : Type, (X → X) → X → X.
 
-  Definition one : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => f x.
+    Definition one : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => f x.
 
-  Definition two : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => f (f x).
+    Definition two : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => f (f x).
 
-  Definition three : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => f (f (f x)).
+    Definition three : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => f (f (f x)).
 
-  Definition four : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => f (f (f (f x))).
+    Definition four : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => f (f (f (f x))).
 
-  Definition five : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => f (f (f (f (f x)))).
+    Definition five : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => f (f (f (f (f x)))).
 
-  Definition six : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => f (f (f (f (f (f x))))).
+    Definition six : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => f (f (f (f (f (f x))))).
 
-  Definition zero : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => x.
+    Definition zero : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => x.
 
-  Example zero_church_peano : zero nat S O = 0.
-  Proof. reflexivity. Qed.
+    Example zero_church_peano : zero nat S O = 0.
+    Proof. reflexivity. Qed.
 
-  Example one_church_peano : one nat S O = 1.
-  Proof. reflexivity. Qed.
+    Example one_church_peano : one nat S O = 1.
+    Proof. reflexivity. Qed.
 
-  Example two_church_peano : two nat S O = 2.
-  Proof. reflexivity. Qed.
+    Example two_church_peano : two nat S O = 2.
+    Proof. reflexivity. Qed.
 
-  Definition scc (n : cnat) : cnat :=
-    fun (X : Type) (f : X → X) (x : X) => n X f (f x).
+    Definition scc (n : cnat) : cnat :=
+      fun (X : Type) (f : X → X) (x : X) => n X f (f x).
 
-  Example scc_1 : scc zero = one.
-  Proof. reflexivity. Qed.
+    Example scc_1 : scc zero = one.
+    Proof. reflexivity. Qed.
 
-  Example scc_2 : scc one = two.
-  Proof. reflexivity. Qed.
+    Example scc_2 : scc one = two.
+    Proof. reflexivity. Qed.
 
-  Example scc_3 : scc two = three.
-  Proof. reflexivity. Qed.
+    Example scc_3 : scc two = three.
+    Proof. reflexivity. Qed.
 
-  Definition plus (n m : cnat) : cnat :=
-    fun (X : Type) (f : X → X) (x : X) =>
+    Definition plus (n m : cnat) : cnat :=
+      fun (X : Type) (f : X → X) (x : X) =>
       n X f (m X f x).
 
-  Example plus_1 : plus zero one = one.
-  Proof. reflexivity. Qed.
+    Example plus_1 : plus zero one = one.
+    Proof. reflexivity. Qed.
 
-  Example plus_2 : plus two three = plus three two.
-  Proof. reflexivity. Qed.
+    Example plus_2 : plus two three = plus three two.
+    Proof. reflexivity. Qed.
 
-  Example plus_3 :
-    plus (plus two two) three = plus one (plus three three).
-  Proof. reflexivity. Qed.
+    Example plus_3 :
+      plus (plus two two) three = plus one (plus three three).
+    Proof. reflexivity. Qed.
 
-  Definition mult (n m : cnat) : cnat :=
-    fun (X : Type) (f : X → X) (x : X) =>
+    Definition mult (n m : cnat) : cnat :=
+      fun (X : Type) (f : X → X) (x : X) =>
       n X (m X f) x.
 
-  Example mult_1 : mult one one = one.
-  Proof. reflexivity. Qed.
+    Example mult_1 : mult one one = one.
+    Proof. reflexivity. Qed.
 
-  Example mult_1' : mult one two = two.
-  Proof. reflexivity. Qed.
+    Example mult_1' : mult one two = two.
+    Proof. reflexivity. Qed.
 
-  Example mult_1'' : mult two one = two.
-  Proof. reflexivity. Qed.
+    Example mult_1'' : mult two one = two.
+    Proof. reflexivity. Qed.
 
-  Example mult_2 : mult zero (plus three three) = zero.
-  Proof. reflexivity. Qed.
+    Example mult_2 : mult zero (plus three three) = zero.
+    Proof. reflexivity. Qed.
 
-  Example mult_3 : mult two three = plus three three.
-  Proof. reflexivity. Qed.
+    Example mult_3 : mult two three = plus three three.
+    Proof. reflexivity. Qed.
 
-End Church.
+    (* Skipping church_exp *)
+
+  End Church.
+
+End Exercises.
