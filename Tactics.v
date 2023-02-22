@@ -44,3 +44,13 @@ Proof.
   symmetry. apply H.
 Qed.
 
+Theorem rev_exercise1 : ∀ (l l' : list nat),
+  l = rev l' → l' = rev l.
+Proof.
+  intros.
+  symmetry.
+  rewrite <- rev_involutive.
+  rewrite H.
+  reflexivity.
+Qed.
+  
