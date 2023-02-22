@@ -36,4 +36,11 @@ Proof.
   apply H0. apply H. assumption.
 Qed.
 
+Theorem silly3: forall (n m : nat),
+  n = m -> m = n.
+Proof.
+  intros n m H.
+  Fail apply H.
+  symmetry. apply H.
+Qed.
 
