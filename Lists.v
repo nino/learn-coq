@@ -1,5 +1,6 @@
 Require Import Unicode.Utf8.
 Require Import List.
+From Learn Require Import Utils.
 
 Notation "x =? y" := (Nat.eqb x y) (at level 70) : nat_scope.
 Notation "x <=? y" := (Nat.leb x y) (at level 70) : nat_scope.
@@ -510,38 +511,16 @@ Proof.
   assumption.
 Qed.
 
+(* Options *)
+
 Inductive natoption : Type :=
   | Some (n : nat)
   | None.
 
-Fixpoint nth_error (l:natlist) (n:nat) : natoption :=
-  match l with
-  | nil => None
-  | a :: l' => match n with
-               | O => Some a
-               | S n' => nth_error l' n'
-               end
-  end.
-
-Example test_nth_error1 : nth_error [4;5;6;7] 0 = Some 4.
-Proof. reflexivity. Qed.
-
-Example test_nth_error2 : nth_error [4;5;6;7] 3 = Some 7.
-Proof. reflexivity. Qed.
-
-Example test_nth_error3 : nth_error [4;5;6;7] 9 = None.
-Proof. reflexivity. Qed.
-
-Definition option_elim (d : nat) (o : natoption) : nat :=
-  match o with
-  | Some n' => n'
-  | None => d
-  end.
-
 Definition hd_error (l : natlist) : natoption :=
   match l with
   | nil => None
-  | h :: _ => Some h
+  | h :: t => Some h
   end.
 
 Example test_hd_error1 : hd_error [] = None.
@@ -553,12 +532,15 @@ Proof. reflexivity. Qed.
 Example test_hd_error3 : hd_error [5;6] = Some 5.
 Proof. reflexivity. Qed.
 
+Definition option_elim (d : nat) (o : natoption) : nat :=
+  match o with
+  | Some n' => n'
+  | None => d
+  end.
+
 Theorem option_elim_hd : ∀ (l:natlist) (default:nat),
   hd default l = option_elim default (hd_error l).
-Proof.
-  intros.
-  destruct l as [| h t]; simpl; reflexivity.
-Qed.
+Proof. intros. destruct l; reflexivity. Qed.
 
 (* Partial maps *)
 
@@ -622,3 +604,4 @@ Inductive baz : Type :=
 (* How many elements does the type `baz` have?
 
    I'm not sure I understand the question. *)
+
