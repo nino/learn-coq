@@ -100,5 +100,5 @@ Check Rplus.
 
 Check map2.
 
-Fixpoint vec_add {A : Type} {n : nat} (addition : A -> A -> A) (xs : t A n) (ys : t A n) : t A n := map2 addition xs ys.
+Definition vec_add {A : Type} {n : nat} (addition : A -> A -> A) (xs : t A n) (ys : t A n) : t A n := map2 addition xs ys.
 
