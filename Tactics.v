@@ -232,3 +232,23 @@ Proof.
       assumption.
 Qed.
 
+Theorem plus_n_n_injective : ∀ n m,
+  n + n = m + m → n = m.
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - simpl. intros m eq. destruct m as [| m' ] eqn:eqM.
+    + reflexivity.
+    + discriminate eq.
+  - simpl. intros m eq. destruct m as [| m' ] eqn:eqM.
+    + discriminate eq.
+    + f_equal.
+      apply IHn'.
+      simpl in eq.
+      rewrite PeanoNat.Nat.add_comm in eq.
+      replace (m' + S m') with (S m' + m') in eq.
+      2: { rewrite PeanoNat.Nat.add_comm. reflexivity. }
+      simpl in eq.
+      injection eq as I1.
+      apply I1.
+Qed.
