@@ -216,4 +216,19 @@ Proof.
       assumption.
 Qed.
 
+Theorem eqb_true : ∀ n m, n =? m = true → n = m.
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - simpl. intros m eq.
+    destruct m as [| m'] eqn:eqM.
+    + reflexivity.
+    + discriminate eq.
+  - simpl. intros m eq.
+    destruct m as [| m'] eqn:eqM.
+    + discriminate eq.
+    + f_equal.
+      apply IHn'.
+      assumption.
+Qed.
 
