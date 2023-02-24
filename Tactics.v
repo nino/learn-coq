@@ -1,6 +1,7 @@
 Require Import Unicode.Utf8.
 Require Import List.
 Import ListNotations.
+Require Import Nat.
 
 Theorem silly1: ∀ (n m : nat),
   n = m → n = m.
@@ -150,6 +151,14 @@ Example discriminate_ex3 : ∀ (X : Type) (x y z : X) (l j : list X),
   x :: y :: l = [] → x = z.
 Proof.
   intros. discriminate.
+Qed.
+
+Theorem eqb_0_l : ∀ (n : N), 0 =? n = true → n = 0.
+Proof.
+  intros.
+  destruct n.
+  - reflexivity.
+  - discriminate.
 Qed.
 
 
