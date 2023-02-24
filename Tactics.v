@@ -110,4 +110,20 @@ Proof.
   transitivity m; assumption.
 Qed.
 
+Definition N := nat.
+
+Theorem S_injective : ∀ (n m : N), S n = S m → n = m.
+Proof.
+  intros n m H.
+  injection H as Hnm.
+  easy.
+Qed.
+
+Theorem injection_ex₁ : ∀ (n m o : N),
+  [n; m] = [o; o] → n = m.
+Proof.
+  intros n m o H.
+  injection H as H₁ H₂.
+  rewrite H₁. rewrite H₂. reflexivity.
+Qed.
 
