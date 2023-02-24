@@ -316,3 +316,34 @@ Proof.
   }
   reflexivity.
 Qed.
+
+Fixpoint combine {X Y : Type } (lx : list X) (ly : list Y) : list (X * Y) :=
+  match lx, ly with
+  | [], _ => []
+  | _, [] => []
+  | x :: tx, y :: ty => (x, y) :: (combine tx ty)
+  end.
+
+Fixpoint split {X Y : Type} (l : list (X*Y))
+               : (list X) * (list Y) :=
+  match l with
+  | [] => ([], [])
+  | (x, y) :: t =>
+      match split t with
+      | (lx, ly) => (x :: lx, y :: ly)
+      end
+  end.
+
+Theorem combine_split : ∀ X Y (l : list (X * Y)) l1 l2,
+  split l = (l1, l2) → combine l1 l2 = l.
+Proof.
+  intros X Y l.
+  induction l as [| h t IHl].
+  - intros.
+    unfold split in H.
+    injection H as I J. rewrite <- I. rewrite <- J.
+    reflexivity.
+  - intros l1 l2 H.
+    destruct h as [x y].
+Admitted.
+
