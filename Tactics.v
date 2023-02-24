@@ -94,4 +94,20 @@ Proof.
   apply H0.
 Qed.
 
+Fixpoint minustwo n :=
+  match n with
+  | O => O
+  | S O => O
+  | S (S n') => n'
+  end.
+
+Example trans_eq_exercise : forall (n m o p : nat),
+  m = (minustwo o) ->
+  (n + p) = m ->
+  (n + p) = (minustwo o).
+Proof.
+  intros.
+  transitivity m; assumption.
+Qed.
+
 
