@@ -83,3 +83,15 @@ Proof.
   - apply eq2.
 Qed.
 
+Example trans_eq_example'' : forall (a b c d e f : nat),
+  [a; b] = [c; d] ->
+  [c; d] = [e; f] ->
+  [a; b] = [e; f].
+Proof.
+  intros.
+  transitivity [c; d].
+  apply H.
+  apply H0.
+Qed.
+
+
