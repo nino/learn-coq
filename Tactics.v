@@ -169,4 +169,14 @@ Proof.
   assumption.
 Qed.
 
+Theorem silly4 : ∀ (n m p q : N),
+  (n = m → p = q) → m = n → q = p.
+Proof.
+  intros n m p q Eq H.
+  symmetry in H.
+  apply Eq in H. (* Overwrites H:n=m with p=q *)
+  symmetry in H.
+  apply H.
+Qed.
+
 
