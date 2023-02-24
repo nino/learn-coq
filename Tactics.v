@@ -300,4 +300,19 @@ Proof.
     reflexivity.
 Qed.
 
+Definition square n := n * n.
 
+Lemma square_mult : ∀ n m, square (n * m) = square n * square m.
+Proof.
+  intros n m.
+  unfold square.
+  rewrite PeanoNat.Nat.mul_assoc.
+  replace (n * n * (m * m)) with (n * n * m * m).
+  2: { rewrite PeanoNat.Nat.mul_assoc. reflexivity. }
+  replace (n * n * m) with (n * m * n).
+  2: {
+    rewrite PeanoNat.Nat.mul_comm.
+    rewrite PeanoNat.Nat.mul_assoc. reflexivity.
+  }
+  reflexivity.
+Qed.
