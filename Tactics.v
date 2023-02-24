@@ -127,3 +127,17 @@ Proof.
   rewrite H₁. rewrite H₂. reflexivity.
 Qed.
 
+Example injection_ex₃ : ∀ (X : Type) (x y z : X) (l j : list X),
+  x :: y :: l = z :: j →
+  j = z :: l →
+  x = y.
+Proof.
+  intros.
+  rewrite H0 in H.
+  injection H as I1 I2.
+  transitivity z.
+  - assumption.
+  - symmetry. assumption.
+Qed.
+
+
