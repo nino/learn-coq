@@ -282,4 +282,22 @@ Proof.
       apply goal.
 Qed.
 
+Theorem nth_error_after_last : ∀ (n:N) (X:Type) (l:list X),
+  length l = n → nth_error l n = None.
+Proof.
+  intros.
+  generalize dependent n.
+  induction l as [| h t IHl].
+  - intros n lEq.
+    simpl in lEq.
+    rewrite <- lEq.
+    reflexivity.
+  - intros n lEq.
+    simpl in lEq.
+    rewrite <- lEq.
+    simpl.
+    apply IHl.
+    reflexivity.
+Qed.
+
 
