@@ -179,4 +179,41 @@ Proof.
   apply H.
 Qed.
 
+Fixpoint double (n:nat) :=
+  match n with
+  | O => O
+  | S n' => S (S (double n'))
+  end.
+
+Theorem double_injective_failed : ∀ (n m : N),
+  double n = double m → n = m.
+Proof.
+  intros n m. induction n as [| n' IHn'].
+  - simpl. intros eq.
+    destruct m as [| m'] eqn:E.
+    + reflexivity.
+    + discriminate eq.
+  - intros eq.
+    destruct m as [| m'] eqn:E.
+    + discriminate eq.
+    + f_equal.
+Abort.
+
+Theorem double_injective : ∀ n m,
+  double n = double m → n = m.
+Proof.
+  intros n. induction n as [| n' IHn'].
+  - simpl. intros m eq.
+    destruct m as [| m'] eqn:E.
+    + reflexivity.
+    + discriminate eq.
+  - intros m eq.
+    destruct m as [| m'] eqn:E.
+    + discriminate eq.
+    + f_equal.
+      apply IHn'.
+      injection eq as goal.
+      assumption.
+Qed.
+
 
