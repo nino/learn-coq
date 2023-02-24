@@ -339,11 +339,16 @@ Theorem combine_split : ∀ X Y (l : list (X * Y)) l1 l2,
 Proof.
   intros X Y l.
   induction l as [| h t IHl].
-  - intros.
-    unfold split in H.
-    injection H as I J. rewrite <- I. rewrite <- J.
-    reflexivity.
   - intros l1 l2 H.
-    destruct h as [x y].
-Admitted.
-
+    unfold split in H.
+    inversion H. reflexivity.
+  - intros [| h1 l1] [| h2 l2] H.
+    + simpl in H. destruct (split t), h. discriminate H.
+    + simpl in H. destruct (split t), h. discriminate H.
+    + simpl in H. destruct (split t), h. discriminate H.
+    + simpl in H. destruct (split t), h.
+      inversion H.
+      replace t with (combine l1 l2).
+      2: { apply IHl. inversion H. reflexivity. }
+      reflexivity.
+Qed.
