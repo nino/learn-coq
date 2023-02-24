@@ -252,3 +252,34 @@ Proof.
       injection eq as I1.
       apply I1.
 Qed.
+
+Theorem doulbe_injective_take2_FAILED : ∀ n m,
+  double n = double m → n = m.
+Proof.
+  intros n m.
+  induction m as [| m' IHm'].
+  - simpl. intros eq. destruct n as [| n'] eqn:E.
+    + reflexivity.
+    + discriminate eq.
+  - intros eq. destruct n as [| n'] eqn:E.
+    + discriminate eq.
+    + f_equal.
+Abort.
+
+Theorem double_injective_take2 : ∀ n m,
+  double n = double m → n = m.
+Proof.
+  intros n m.
+  generalize dependent n.
+  induction m as [| m' IHm'].
+  - simpl. intros n eq. destruct n as [| n'] eqn:eqN.
+    + reflexivity.
+    + discriminate eq.
+  - simpl. intros n eq. destruct n as [| n'] eqn:eqN.
+    + discriminate eq.
+    + f_equal. apply IHm'.
+      injection eq as goal.
+      apply goal.
+Qed.
+
+
