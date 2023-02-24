@@ -161,4 +161,12 @@ Proof.
   - discriminate.
 Qed.
 
+Theorem eq_implies_succ_equal : ∀ (n m : N),
+  n = m → S n = S m.
+Proof.
+  intros.
+  f_equal.
+  assumption.
+Qed.
+
 
