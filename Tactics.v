@@ -140,4 +140,16 @@ Proof.
   - symmetry. assumption.
 Qed.
 
+Theorem discriminate_ex1 : ∀ (n m : N),
+  false = true → n = m.
+Proof.
+  intros. discriminate.
+Qed.
+
+Example discriminate_ex3 : ∀ (X : Type) (x y z : X) (l j : list X),
+  x :: y :: l = [] → x = z.
+Proof.
+  intros. discriminate.
+Qed.
+
 
