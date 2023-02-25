@@ -380,3 +380,24 @@ Proof.
       reflexivity.
     + discriminate eq.
 Qed.
+
+Theorem bool_fn_applied_thrice :
+  forall (f : bool -> bool) (b : bool),
+  f (f (f b)) = f b.
+Proof.
+  intros f b.
+  destruct b eqn:eqB.
+  - destruct (f true) eqn:eqFt.
+    + rewrite eqFt. apply eqFt.
+    + destruct (f false) eqn:eqFf.
+      * apply eqFt.
+      * apply eqFf.
+  - destruct (f true) eqn:eqFt.
+    + destruct (f false) eqn:eqFf.
+      * rewrite eqFt. apply eqFt.
+      * rewrite eqFf. apply eqFf.
+    + destruct (f false) eqn:eqFf.
+      * rewrite eqFt. apply eqFf.
+      * rewrite eqFf. apply eqFf.
+Qed.
+
