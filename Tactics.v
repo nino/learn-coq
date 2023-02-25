@@ -358,4 +358,25 @@ Definition sillyfun1 (n : nat) : bool :=
   else if n =? 5 then true
   else false.
 
+Theorem sillyfun1_odd_FAILED : forall n : N,
+  sillyfun1 n = true -> odd n = true.
+Proof.
+  intros n eq. unfold sillyfun1 in eq.
+  destruct (n =? 3).
+  (* Stuck *)
+Abort.
 
+Theorem sillyfun1_odd : forall n : N,
+  sillyfun1 n = true -> odd n = true.
+Proof.
+  intros n eq. unfold sillyfun1 in eq.
+  destruct (n =? 3) eqn:Heqe3.
+  - apply PeanoNat.Nat.eqb_eq in Heqe3.
+    rewrite Heqe3.
+    reflexivity.
+  - destruct (n =? 5) eqn:Heqe5.
+    + apply PeanoNat.Nat.eqb_eq in Heqe5.
+      rewrite Heqe5.
+      reflexivity.
+    + discriminate eq.
+Qed.
