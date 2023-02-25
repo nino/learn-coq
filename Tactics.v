@@ -352,3 +352,10 @@ Proof.
       2: { apply IHl. inversion H. reflexivity. }
       reflexivity.
 Qed.
+
+Definition sillyfun1 (n : nat) : bool :=
+  if n =? 3 then true
+  else if n =? 5 then true
+  else false.
+
+
