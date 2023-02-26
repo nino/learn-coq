@@ -438,3 +438,38 @@ Proof.
   apply PeanoNat.Nat.eqb_eq.
   transitivity m; assumption.
 Qed.
+
+Definition split_combine_statement : Prop :=
+  ∀ (X Y : Type) (l1 : list X) (l2 : list Y) (l : list (X * Y)),
+  length l1 = length l2 → combine l1 l2 = l →
+  split l = (l1, l2).
+
+Lemma nil_length_0 : ∀ (X : Type) (l : list X),
+  length l = 0 → l = [].
+Proof.
+  intros. induction l.
+  - reflexivity.
+  - discriminate H.
+Qed.
+
+Theorem split_combine : split_combine_statement.
+Proof.
+  unfold split_combine_statement.
+  intros X Y l1 l2 l Len.
+  generalize dependent l.
+  induction l1 as [| h1 l1' IHl'].
+  - simpl. intros l H.
+    simpl in Len.
+    symmetry in Len.
+    apply nil_length_0 in Len.
+    rewrite Len.
+    rewrite <- H.
+    reflexivity.
+  - simpl. intros l H.
+    destruct l2 as [| h2 l2'].
+    + discriminate Len.
+    + rewrite <- H.
+      simpl.
+Admitted.
+
+(* Moving on *)
