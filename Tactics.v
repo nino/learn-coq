@@ -401,3 +401,30 @@ Proof.
       * rewrite eqFf. apply eqFf.
 Qed.
 
+Lemma n_eq_n : forall n : nat, (n =? n) = true.
+Proof.
+  intros.
+  apply PeanoNat.Nat.eqb_eq.
+  reflexivity.
+Qed.
+
+Theorem eqb_sym : ∀ (n m : nat),
+  (n =? m) = (m =? n).
+Proof.
+  intros.
+  destruct (n =? m) eqn:nmEq.
+  - apply PeanoNat.Nat.eqb_eq in nmEq.
+    symmetry.
+    apply PeanoNat.Nat.eqb_eq.
+    symmetry. apply nmEq.
+  - destruct (m =? n) eqn:mnEq.
+    + apply PeanoNat.Nat.eqb_eq in mnEq.
+      symmetry in mnEq.
+      apply PeanoNat.Nat.eqb_neq in nmEq.
+      rewrite mnEq in nmEq.
+      rewrite <- PeanoNat.Nat.eqb_neq in nmEq.
+      rewrite n_eq_n in nmEq.
+      discriminate.
+    + reflexivity.
+Qed.
+
