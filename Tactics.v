@@ -428,3 +428,13 @@ Proof.
     + reflexivity.
 Qed.
 
+Theorem eqb_trans : ∀ n m p,
+  n =? m = true →
+  m =? p = true →
+  n =? p = true.
+Proof.
+  intros.
+  apply PeanoNat.Nat.eqb_eq in H, H0.
+  apply PeanoNat.Nat.eqb_eq.
+  transitivity m; assumption.
+Qed.
