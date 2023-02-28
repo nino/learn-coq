@@ -40,4 +40,6 @@ Qed.
 Lemma proj2 : forall P Q : Prop, P /\ Q -> Q.
 Proof. intros. destruct H as [HP HQ]. apply HQ. Qed.
 
+Theorem and_commut : forall P Q : Prop, P /\ Q -> Q /\ P.
+Proof. intros P Q [HP HQ]. split; assumption. Qed.
 
