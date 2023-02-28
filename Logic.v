@@ -43,3 +43,11 @@ Proof. intros. destruct H as [HP HQ]. apply HQ. Qed.
 Theorem and_commut : forall P Q : Prop, P /\ Q -> Q /\ P.
 Proof. intros P Q [HP HQ]. split; assumption. Qed.
 
+Theorem and_assoc : forall P Q R : Prop,
+  P /\ (Q /\ R) -> (P /\ Q) /\ R.
+Proof.
+  intros P Q R [HP [HQ HR]].
+  split.
+  - split; assumption.
+  - assumption.
+Qed.
