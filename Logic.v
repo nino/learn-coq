@@ -37,4 +37,7 @@ Proof.
         destruct (n + S m); discriminate.
 Qed.
 
+Lemma proj2 : forall P Q : Prop, P /\ Q -> Q.
+Proof. intros. destruct H as [HP HQ]. apply HQ. Qed.
+
 
