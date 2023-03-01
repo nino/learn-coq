@@ -51,3 +51,31 @@ Proof.
   - split; assumption.
   - assumption.
 Qed.
+
+Lemma factor_is_0 : forall n m : nat, n = 0 \/ m = 0 -> n * m = 0.
+Proof.
+  intros n m [Hn | Hm].
+  - rewrite Hn. apply Nat.mul_0_l.
+  - rewrite Hm. apply Nat.mul_0_r.
+Qed.
+
+Lemma or_intro_l : forall A B : Prop, A -> A \/ B.
+Proof. intros. left. assumption. Qed.
+
+Lemma zero_or_succ : forall n : nat, n = 0 ∨ n = S (pred n).
+Proof.
+  intros [| n' ].
+  - left. reflexivity.
+  - right. reflexivity.
+Qed.
+
+Lemma mult_is_O : forall n m : nat, n * m = 0 → n = 0 ∨ m = 0.
+Proof.
+  intros [|n] [|m] H.
+  - left. reflexivity.
+  - left. reflexivity.
+  - right. reflexivity.
+  - discriminate H.
+Qed.
+
+
