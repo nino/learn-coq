@@ -78,4 +78,9 @@ Proof.
   - discriminate H.
 Qed.
 
-
+Theorem or_commut : forall P Q : Prop, P ∨ Q → Q ∨ P.
+Proof.
+  intros P Q [HP | HQ].
+  - right. assumption.
+  - left. assumption.
+Qed.
