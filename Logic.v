@@ -84,3 +84,70 @@ Proof.
   - right. assumption.
   - left. assumption.
 Qed.
+
+Module NotPlayground.
+
+  Definition not (P : Prop) : Prop := P → False.
+  Notation "¬ x" := (not x) : type_scope.
+
+  Check not : Prop → Prop.
+
+End NotPlayground.
+
+Theorem ex_falso_quodlibet : ∀ (P : Prop), False → P.
+Proof.
+  intros P contra.
+  destruct contra.
+Qed.
+
+Theorem not_implies_our_not : ∀ (P : Prop),
+  ¬P → (∀ (Q : Prop), P → Q).
+Proof.
+  intros P contra.
+  intros.
+  destruct contra. assumption.
+Qed.
+
+Theorem zero_not_one : 0 ≠ 1.
+Proof.
+  unfold not.
+  intros contra. discriminate contra.
+Qed.
+
+Theorem not_False : ¬False.
+Proof.
+  unfold not.
+  intros.
+  destruct H.
+Qed.
+
+Theorem contradiction_implies_anything: forall P Q : Prop,
+  (P /\ ¬P) -> Q.
+Proof.
+  intros P Q [HP HNP].
+  unfold not in HNP.
+  apply HNP in HP.
+  destruct HP.
+Qed.
+
+Theorem double_neg : forall P : Prop,
+  P -> ¬¬P.
+Proof.
+  intros P H.
+  unfold not.
+  intros HF.
+  apply HF in H.
+  destruct H.
+Qed.
+
+Theorem contrapositive : forall (P Q : Prop),
+  (P -> Q) -> (¬Q -> ¬P).
+Proof.
+  intros. unfold not.
+  intros.
+  apply H0.
+  apply H.
+  exact H1.
+Qed.
+
+
