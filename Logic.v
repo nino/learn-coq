@@ -277,3 +277,39 @@ Proof.
     * right. right. assumption.
 Qed.
 
+Lemma mul_eq_0_ternary : forall n m p,
+  n * m * p = 0 <-> n = 0 \/ m = 0 \/ p = 0.
+Proof.
+  intros n m p.
+  rewrite mul_eq_0.
+  rewrite mul_eq_0.
+  rewrite or_assoc.
+  reflexivity.
+Qed.
+
+(* Existential quantification *)
+
+Definition Even x := exists n : nat, x = double n.
+
+Lemma four_is_even : Even 4.
+Proof.
+  unfold Even. exists 2. reflexivity.
+Qed.
+
+Theorem exists_example_2 : forall n,
+  (exists m, n = 4 + m) -> (exists o, n = 2 + o).
+Proof.
+  intros n [m Hm].
+  exists (2 + m).
+  apply Hm.
+Qed.
+
+Theorem dist_not_exists : forall (X : Type) (P : X -> Prop),
+  (forall x : X, P x) -> ~ (exists x, ~ P x).
+Proof.
+  intros X P Hx.
+  unfold not. intro contra.
+  destruct contra as [x' Hx'].
+  apply Hx' in Hx.
+  apply Hx.
+Qed.
