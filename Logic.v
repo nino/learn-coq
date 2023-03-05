@@ -150,4 +150,85 @@ Proof.
   exact H1.
 Qed.
 
+Theorem not_both_true_and_false : forall P : Prop, ¬ (P /\ ¬P).
+Proof.
+  intros P. intro contra. destruct contra.
+  unfold not in H0.
+  apply H0 in H.
+  apply H.
+Qed.
+
+Theorem de_morgan_not_or : ∀ (P Q : Prop), ¬ (P ∨ Q) → ¬P ∧ ¬Q.
+Proof.
+  intros. unfold not in H.
+  split.
+  - intro contra.
+    apply H.
+    left. assumption.
+  - intro contra.
+    apply H.
+    right. assumption.
+Qed.
+
+Theorem not_true_is_false : ∀ b : bool,
+  b ≠ true → b = false.
+Proof.
+  intros b H.
+  destruct b eqn:bEq.
+  - exfalso.
+    unfold not in H.
+    apply H. reflexivity.
+  - reflexivity.
+Qed.
+
+Definition disc_fn (n : nat) : Prop :=
+  match n with
+  | O => True
+  | S _ => False
+  end.
+
+Theorem disc_example : ∀ n, ¬(O = S n).
+Proof.
+  intros n H1.
+  assert (H2 : disc_fn O).
+  { simpl. apply I. }
+  rewrite H1 in H2.
+  simpl in H2. apply H2.
+Qed.
+
+Module IffPlayground.
+  Definition iff (P Q : Prop) := (P → Q) ∧ (Q → P).
+  Notation "P <-> Q" := (iff P Q) (at level 95, no associativity) : type_scope.
+End IffPlayground.
+
+Theorem iff_sym : forall P Q : Prop, (P <-> Q) -> (Q <-> P).
+Proof.
+  intros P Q [PQ QP].
+  split.
+  - apply QP.
+  - apply PQ.
+Qed.
+
+Lemma not_true_iff_false : forall b : bool, b ≠ true <-> b = false.
+Proof.
+  intros b.
+  split.
+  - apply not_true_is_false.
+  - intros. rewrite H. intros contra. discriminate contra.
+Qed.
+
+Lemma apply_iff_example1 : forall P Q R : Prop,
+  (P <-> Q) -> (Q -> R) -> (P -> R).
+Proof.
+  intros P Q R HPQ H HP.
+  apply H.
+  apply HPQ. apply HP.
+Qed.
+
+Lemma apply_iff_example2 : forall P Q R : Prop,
+  (P ↔ Q) → (P → R) → (Q → R).
+Proof.
+  intros. apply H0. apply H. apply H1.
+Qed.
+
 
