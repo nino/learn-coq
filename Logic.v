@@ -231,4 +231,21 @@ Proof.
   intros. apply H0. apply H. apply H1.
 Qed.
 
+Lemma one_or_the_other : forall P Q
+
+Theorem or_distributes_over_and : forall P Q R : Prop,
+  P \/ (Q /\ R) <-> (P \/ Q) /\ (P \/ R).
+Proof.
+  intros P Q R.
+  split.
+  - intros.
+    destruct H.
+    + split.
+      * left. assumption.
+      * left. assumption.
+    + destruct H. split.
+      * right. apply H.
+      * right. apply H0.
+  - intros Both_Ors.
+    destruct Both_Ors as [P_or_Q P_or_R].
 
