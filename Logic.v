@@ -2,6 +2,9 @@ Require Import Unicode.Utf8.
 Require Import Nat.
 Require Import PeanoNat.
 
+Require Import List.
+Import ListNotations.
+
 Definition plus_claim : Prop := 2 + 2 = 4.
 
 Theorem plus_claim_is_true : plus_claim.
@@ -325,6 +328,58 @@ Proof.
   - intros [[xp HP] | [xq HQ]].
     * exists xp. left. assumption.
     * exists xq. right. assumption.
+Qed.
+
+Theorem leb_plus_exists : forall n m : nat,
+  n <=? m = true -> exists x, m = n + x.
+Proof.
+  intros n m n_le_m.
+  exists (m - n).
+  induction m as [| m' IHm].
+  - simpl. destruct n.
+    * reflexivity.
+    * unfold leb in n_le_m. discriminate n_le_m.
+  - simpl.
+    destruct n as [| n'].
+    * reflexivity.
+    * simpl in n_le_m.
+Admitted.
+
+(* Programming with propositions *)
+
+Fixpoint In {A : Type} (x : A) (l : list A) : Prop :=
+  match l with
+  | [] => False
+  | x' :: l' => x' = x \/ In x l'
+  end.
+
+Example In_example_1 : In 4 [1; 2; 3; 4; 5].
+Proof.
+  simpl. right. right. right. left. reflexivity.
+Qed.
+
+Example In_example_1_auto : In 4 [1; 2; 3; 4; 5].
+Proof.
+  simpl. auto.
+Qed.
+
+Example In_example_2 : forall n, In n [2; 4] -> exists n', n = 2 * n'.
+Proof.
+  simpl.
+  intros n [H | [H | []]].
+  - exists 1. rewrite <- H. reflexivity.
+  - exists 2. rewrite <- H. reflexivity.
+Qed.
+
+Theorem In_map : forall (A B : Type) (f : A -> B) (l : list A) (x : A),
+  In x l -> In (f x) (map f l).
+Proof.
+  intros A B f l x.
+  induction l as [| x' l' IHl].
+  - simpl. intro contra. apply contra.
+  - simpl. intros [Hxx | Hin].
+    * left. rewrite Hxx. reflexivity.
+    * right. apply IHl. apply Hin.
 Qed.
 
 
