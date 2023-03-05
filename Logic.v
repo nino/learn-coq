@@ -253,3 +253,27 @@ Proof.
       * right. split; assumption.
 Qed.
 
+From Coq Require Import Setoids.Setoid.
+
+Lemma mul_eq_0 : forall n m, n * m = 0 <-> n = 0 \/ m = 0.
+Proof.
+  intros.
+  split.
+  - apply mult_is_O.
+  - apply factor_is_0.
+Qed.
+
+Theorem or_assoc : forall P Q R : Prop,
+  P \/ (Q \/ R) <-> (P \/ Q) \/ R.
+Proof.
+  split.
+  - intros. destruct H as [HP | [HQ | HR]].
+    * left. left. assumption.
+    * left. right. assumption.
+    * right. assumption.
+  - intros. destruct H as [[H | H] | H].
+    * left. assumption.
+    * right. left. assumption.
+    * right. right. assumption.
+Qed.
+
