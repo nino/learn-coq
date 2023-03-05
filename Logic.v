@@ -313,3 +313,18 @@ Proof.
   apply Hx' in Hx.
   apply Hx.
 Qed.
+
+Theorem dist_exists_or : forall (X:Type) (P Q : X -> Prop),
+  (exists x, P x \/ Q x) <-> (exists x, P x) \/ (exists x, Q x).
+Proof.
+  intros X P Q. split.
+  - intros [x1 H_or].
+    destruct H_or.
+    * left. exists x1. apply H.
+    * right. exists x1. apply H.
+  - intros [[xp HP] | [xq HQ]].
+    * exists xp. left. assumption.
+    * exists xq. right. assumption.
+Qed.
+
+
