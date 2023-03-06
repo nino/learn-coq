@@ -1,4 +1,3 @@
-Require Import Unicode.Utf8.
 Require Import Nat.
 Require Import PeanoNat.
 
@@ -10,17 +9,17 @@ Definition plus_claim : Prop := 2 + 2 = 4.
 Theorem plus_claim_is_true : plus_claim.
 Proof. reflexivity. Qed.
 
-Example and_example : 3 + 4 = 7 ∧ 2 * 2 = 4.
+Example and_example : 3 + 4 = 7 /\ 2 * 2 = 4.
 Proof. split; reflexivity. Qed.
 
-Lemma and_intro : ∀ A B : Prop, A → B → A ∧ B.
+Lemma and_intro : forall A B : Prop, A -> B -> A /\ B.
 Proof.
   intros A B HA HB. split.
   - apply HA.
   - apply HB.
 Qed.
 
-Example and_example' : 3 + 4 = 7 ∧ 2 * 2 = 4.
+Example and_example' : 3 + 4 = 7 /\ 2 * 2 = 4.
 Proof. apply and_intro; reflexivity. Qed.
 
 Example and_exercise : forall n m : nat, n + m = 0 -> n = 0 /\ m = 0.
@@ -65,14 +64,14 @@ Qed.
 Lemma or_intro_l : forall A B : Prop, A -> A \/ B.
 Proof. intros. left. assumption. Qed.
 
-Lemma zero_or_succ : forall n : nat, n = 0 ∨ n = S (pred n).
+Lemma zero_or_succ : forall n : nat, n = 0 \/ n = S (pred n).
 Proof.
   intros [| n' ].
   - left. reflexivity.
   - right. reflexivity.
 Qed.
 
-Lemma mult_is_O : forall n m : nat, n * m = 0 → n = 0 ∨ m = 0.
+Lemma mult_is_O : forall n m : nat, n * m = 0 -> n = 0 \/ m = 0.
 Proof.
   intros [|n] [|m] H.
   - left. reflexivity.
@@ -81,7 +80,7 @@ Proof.
   - discriminate H.
 Qed.
 
-Theorem or_commut : forall P Q : Prop, P ∨ Q → Q ∨ P.
+Theorem or_commut : forall P Q : Prop, P \/ Q -> Q \/ P.
 Proof.
   intros P Q [HP | HQ].
   - right. assumption.
@@ -90,34 +89,34 @@ Qed.
 
 Module NotPlayground.
 
-  Definition not (P : Prop) : Prop := P → False.
-  Notation "¬ x" := (not x) : type_scope.
+  Definition not (P : Prop) : Prop := P -> False.
+  Notation "~ x" := (not x) : type_scope.
 
-  Check not : Prop → Prop.
+  Check not : Prop -> Prop.
 
 End NotPlayground.
 
-Theorem ex_falso_quodlibet : ∀ (P : Prop), False → P.
+Theorem ex_falso_quodlibet : forall (P : Prop), False -> P.
 Proof.
   intros P contra.
   destruct contra.
 Qed.
 
-Theorem not_implies_our_not : ∀ (P : Prop),
-  ¬P → (∀ (Q : Prop), P → Q).
+Theorem not_implies_our_not : forall (P : Prop),
+  ~P -> (forall (Q : Prop), P -> Q).
 Proof.
   intros P contra.
   intros.
   destruct contra. assumption.
 Qed.
 
-Theorem zero_not_one : 0 ≠ 1.
+Theorem zero_not_one : 0 <> 1.
 Proof.
   unfold not.
   intros contra. discriminate contra.
 Qed.
 
-Theorem not_False : ¬False.
+Theorem not_False : ~False.
 Proof.
   unfold not.
   intros.
@@ -125,7 +124,7 @@ Proof.
 Qed.
 
 Theorem contradiction_implies_anything: forall P Q : Prop,
-  (P /\ ¬P) -> Q.
+  (P /\ ~P) -> Q.
 Proof.
   intros P Q [HP HNP].
   unfold not in HNP.
@@ -134,7 +133,7 @@ Proof.
 Qed.
 
 Theorem double_neg : forall P : Prop,
-  P -> ¬¬P.
+  P -> ~~P.
 Proof.
   intros P H.
   unfold not.
@@ -144,7 +143,7 @@ Proof.
 Qed.
 
 Theorem contrapositive : forall (P Q : Prop),
-  (P -> Q) -> (¬Q -> ¬P).
+  (P -> Q) -> (~Q -> ~P).
 Proof.
   intros. unfold not.
   intros.
@@ -153,7 +152,7 @@ Proof.
   exact H1.
 Qed.
 
-Theorem not_both_true_and_false : forall P : Prop, ¬ (P /\ ¬P).
+Theorem not_both_true_and_false : forall P : Prop, ~ (P /\ ~P).
 Proof.
   intros P. intro contra. destruct contra.
   unfold not in H0.
@@ -161,7 +160,7 @@ Proof.
   apply H.
 Qed.
 
-Theorem de_morgan_not_or : ∀ (P Q : Prop), ¬ (P ∨ Q) → ¬P ∧ ¬Q.
+Theorem de_morgan_not_or : forall (P Q : Prop), ~ (P \/ Q) -> ~P /\ ~Q.
 Proof.
   intros. unfold not in H.
   split.
@@ -173,8 +172,8 @@ Proof.
     right. assumption.
 Qed.
 
-Theorem not_true_is_false : ∀ b : bool,
-  b ≠ true → b = false.
+Theorem not_true_is_false : forall b : bool,
+  b <> true -> b = false.
 Proof.
   intros b H.
   destruct b eqn:bEq.
@@ -190,7 +189,7 @@ Definition disc_fn (n : nat) : Prop :=
   | S _ => False
   end.
 
-Theorem disc_example : ∀ n, ¬(O = S n).
+Theorem disc_example : forall n, ~(O = S n).
 Proof.
   intros n H1.
   assert (H2 : disc_fn O).
@@ -200,7 +199,7 @@ Proof.
 Qed.
 
 Module IffPlayground.
-  Definition iff (P Q : Prop) := (P → Q) ∧ (Q → P).
+  Definition iff (P Q : Prop) := (P -> Q) /\ (Q -> P).
   Notation "P <-> Q" := (iff P Q) (at level 95, no associativity) : type_scope.
 End IffPlayground.
 
@@ -212,7 +211,7 @@ Proof.
   - apply PQ.
 Qed.
 
-Lemma not_true_iff_false : forall b : bool, b ≠ true <-> b = false.
+Lemma not_true_iff_false : forall b : bool, b <> true <-> b = false.
 Proof.
   intros b.
   split.
@@ -229,7 +228,7 @@ Proof.
 Qed.
 
 Lemma apply_iff_example2 : forall P Q R : Prop,
-  (P ↔ Q) → (P → R) → (Q → R).
+  (P <-> Q) -> (P -> R) -> (Q -> R).
 Proof.
   intros. apply H0. apply H. apply H1.
 Qed.
@@ -382,4 +381,33 @@ Proof.
     * right. apply IHl. apply Hin.
 Qed.
 
+Theorem In_map_iff : forall (A B : Type) (f : A -> B) (l : list A) (y : B),
+  In y (map f l) <-> exists x, f x = y /\ In x l.
+Proof.
+  intros A B f l y.
+  induction l as [| x' l' IHl].
+  - simpl. split.
+    + intros contra. exfalso. apply contra.
+    + intros [x Hx]. destruct Hx. apply H0.
+  - split.
+    + simpl.
+      intros [ Hh | Ht ].
+      * exists x'. split.
+        -- assumption.
+        -- left. reflexivity.
+      * rewrite IHl in Ht.
+        destruct Ht as [x Hx].
+        exists x.
+        destruct Hx.
+        split.
+        --  apply H.
+        --  right. apply H0.
+    + simpl. rewrite IHl.
+      intros [x Hx]. destruct Hx as [Hfxy [Hxx | Hin]].
+      * rewrite <- Hxx in Hfxy.
+        left. apply Hfxy.
+      * right. exists x. split.
+        -- apply Hfxy.
+        -- apply Hin.
+Qed.
 

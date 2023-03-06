@@ -45,7 +45,7 @@ HASNATDYNLINK     := $(COQMF_HASNATDYNLINK)
 OCAMLWARN         := $(COQMF_WARN)
 
 Makefile.conf: _CoqProject
-	coq_makefile -f _CoqProject Bag.v basics.v Induction.v learn.v Lists.v Poly.v reals.v Utils.v -o Makefile
+	coq_makefile Bag.v Induction.v Lists.v Logic.v Poly.v R.v Tactics.v Utils.v basics.v learn.v reals.v vec.v vecrecord.v -f _CoqProject -o Makefile
 
 # This file can be created by the user to hook into double colon rules or
 # add any other Makefile code he may need
@@ -238,7 +238,9 @@ endif
 # these variables are meant to be overridden if you want to add *extra* flags
 COQEXTRAFLAGS?=
 COQCHKEXTRAFLAGS?=
-COQDOCEXTRAFLAGS?=
+
+# No proofs
+COQDOCEXTRAFLAGS=-g
 
 # Find the last argument of the form "-native-compiler FLAG"
 COQUSERNATIVEFLAG:=$(strip \
