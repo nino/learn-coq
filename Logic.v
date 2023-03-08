@@ -449,3 +449,31 @@ Proof.
       * apply IHl; assumption.
 Qed.
 
+Definition combine_odd_even (Podd Peven : nat -> Prop) : nat -> Prop :=
+  fun n => if even n then Peven n else Podd n.
+
+Lemma even_not_odd : forall n : nat,
+  even n = negb (odd n).
+Proof.
+  intros n.
+  induction n as [| n' IHn'].
+  - reflexivity.
+  - replace (S n') with (1 + n').
+    2: { simpl. reflexivity. }
+    destruct (even n') eqn:eqEven.
+    + rewrite Nat.even_spec in eqEven.
+      unfold Nat.Even in eqEven.
+      destruct eqEven as [half Hhalf].
+Abort.
+
+Theorem combine_odd_even_intro :
+  forall (Podd Peven : nat -> Prop) (n : nat),
+  (odd n = true -> Podd n) ->
+  (odd n = false -> Peven n) ->
+  combine_odd_even Podd Peven n.
+Proof.
+  intros Podd Peven n Hodd Heven.
+  destruct (odd n) eqn:nOddEq.
+  - unfold combine_odd_even.
+Admitted.
+(* Let's get back to this some other time *)
