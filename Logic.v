@@ -477,3 +477,15 @@ Proof.
   - unfold combine_odd_even.
 Admitted.
 (* Let's get back to this some other time *)
+
+(* Applying theorems to arguments *)
+Set Printing Parentheses.
+
+Lemma add_comm3 : forall x y z, x + (y + z) = (z + y) + x.
+Proof.
+  intros x y z.
+  rewrite Nat.add_comm.
+  rewrite (Nat.add_comm y z).
+  rewrite (Nat.add_comm (z + y) x).
+  reflexivity.
+Qed.
