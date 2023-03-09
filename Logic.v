@@ -489,3 +489,27 @@ Proof.
   rewrite (Nat.add_comm (z + y) x).
   reflexivity.
 Qed.
+
+Theorem in_not_nil : forall A (x : A) (l : list A),
+  In x l -> l <> [].
+Proof.
+  intros A x l H Hempty.
+  destruct l as [| hd tl ].
+  - simpl in H. apply H.
+  - discriminate Hempty.
+Qed.
+
+Theorem in_not_nil_42 : forall l : list nat, In 42 l -> l <> [].
+Proof.
+  intros l H.
+  apply in_not_nil with (x := 42).
+  apply H.
+Qed.
+
+Theorem in_not_nil_42_take2 : forall l : list nat, In 42 l -> l <> [].
+Proof.
+  intros l H.
+  apply in_not_nil in H.
+  assumption.
+Qed.
+
