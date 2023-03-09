@@ -513,3 +513,18 @@ Proof.
   assumption.
 Qed.
 
+Theorem in_not_nil_42_take4 : forall l : list nat, In 42 l -> l <> [].
+Proof.
+  intros l H.
+  apply (in_not_nil nat 42).
+  apply H.
+Qed.
+
+Theorem in_not_nil_42_take5 : forall l : list nat, In 42 l -> l <> [].
+Proof.
+  intros l H.
+  apply (in_not_nil _ _ _ H).
+  (* Ok this is pretty cool *)
+Qed.
+
+
