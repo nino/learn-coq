@@ -1,6 +1,8 @@
 Require Import Arith.PeanoNat.
 Require Import Nat.
 Require Import Lia.
+Require Import List.
+Import ListNotations.
 
 Section CollatzConjecture.
 
@@ -55,4 +57,44 @@ Inductive clos_refl_trans {X : Type} (R: X->X->Prop) : X->X->Prop :=
   | tr_refl (x y : X) :
       clos_refl_trans R x y ->
       clos_refl_trans R y x.
+
+Inductive Perm3 {X : Type} : list X -> list X -> Prop :=
+  | perm3_swap12 (a b c : X) :
+      Perm3 [a; b; c] [b; a; c]
+  | perm3_swap23 (a b c : X) :
+      Perm3 [a; b; c] [a; c; b]
+  | perm3_trans (l1 l2 l3 : list X) :
+      Perm3 l1 l2 -> Perm3 l2 l3 -> Perm3 l1 l3.
+
+(*
+   Exercise 1: perm
+   Perm3 [1; 2; 3] [3; 2; 1] is True, because
+   Perm3 [1; 2; 3] [1; 3; 2] is True, and
+   Perm3 [1; 3; 2] [3; 1; 2] is True, and
+   Perm3 [3; 1; 2] [3; 2; 1] is True, and
+   transitivity.
+
+   And Perm3 [1; 2; 3] [1; 2; 3] is True because you can swap 12 twice and then transitivity.
+ *)
+
+(* Another evenness *)
+
+Inductive ev : nat -> Prop :=
+  | ev_0 : ev 0
+  | ev_SS (n : nat) (H : ev n) : ev (S (S n)).
+
+(* From Induction.v *)
+Fixpoint double (n:nat) :=
+  match n with
+  | O => O
+  | S n' => S (S (double n'))
+  end.
+
+Theorem ev_double : forall n, ev (double n).
+Proof.
+  intros n.
+  induction n.
+  - simpl. apply ev_0.
+  - simpl. apply ev_SS. apply IHn.
+Qed.
 
