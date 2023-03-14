@@ -98,3 +98,26 @@ Proof.
   - simpl. apply ev_SS. apply IHn.
 Qed.
 
+Theorem ev_inversion : forall (n : nat),
+  ev n -> (n = 0) \/ (exists n', n = S (S n') /\ ev n').
+Proof.
+  intros n E. destruct E as [| n' E'] eqn:EE.
+  - left. reflexivity.
+  - right. exists n'.
+    split.
+    + reflexivity.
+    + apply E'.
+Qed.
+
+Theorem evSS_ev : forall n:nat, ev (S (S n)) -> ev n.
+Proof.
+  intros n H.
+  apply ev_inversion in H.
+  destruct H as [H0 | H1].
+  - discriminate H0.
+  - destruct H1 as [n' [HSS Hev]].
+    injection HSS as Hnn.
+    rewrite <- Hnn in Hev.
+    apply Hev.
+Qed.
+
