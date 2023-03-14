@@ -121,3 +121,11 @@ Proof.
     apply Hev.
 Qed.
 
+Theorem evSS_ev' : forall n : nat, ev (S (S n)) -> ev n.
+Proof.
+  intros n ESS.
+  inversion ESS as [| n' E' Heq].
+  apply E'.
+Qed.
+
+
