@@ -196,3 +196,43 @@ Proof.
     simpl.
     reflexivity.
 Qed.
+
+Theorem ev_Even_iff : forall n : nat, ev n <-> Even n.
+Proof.
+  intros n. split.
+  - apply ev_Even.
+  - unfold Even.
+    intros [k Hk].
+    rewrite Hk.
+    apply ev_double.
+Qed.
+
+Theorem ev_sum : forall n m, ev n -> ev m -> ev (n + m).
+Proof.
+  intros n m Hn Hm.
+  induction Hn as [| n' En IHn].
+  - simpl. apply Hm.
+  - simpl. apply ev_SS. apply IHn.
+Qed.
+
+Inductive ev' : nat -> Prop :=
+  | ev'_0 : ev' 0
+  | ev'_2 : ev' 2
+  | ev'_sum n m (Hn : ev' n) (Hm : ev' m) : ev' (n + m).
+
+Theorem ev'_ev : forall n, ev' n <-> ev n.
+Proof.
+  split.
+  - intros Hev'.
+    induction Hev' as [ | | n' m' Hn' Hm' Hev' IH].
+    + apply ev_0.
+    + apply (ev_SS 0 ev_0).
+    + apply (ev_sum n' m' Hm' IH).
+      (* I might have fucked up some of those names in the induction *)
+  - intros Hev.
+    induction Hev as [ | n' Hn' IH].
+    + apply ev'_0.
+    + replace (S (S n')) with (2 + n') by reflexivity.
+      apply (ev'_sum 2 n' ev'_2 IH).
+Qed.
+
