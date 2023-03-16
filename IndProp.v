@@ -236,3 +236,14 @@ Proof.
       apply (ev'_sum 2 n' ev'_2 IH).
 Qed.
 
+Theorem ev_ev__ev : forall n m, ev (n + m) -> ev n -> ev m.
+Proof.
+  intros n m Hsum Hn.
+  induction Hn as [| n' Hn' IH].
+  - simpl in Hsum. assumption.
+  - apply IH.
+    simpl in Hsum.
+    inversion Hsum.
+    assumption.
+Qed.
+
