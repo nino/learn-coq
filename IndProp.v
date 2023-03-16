@@ -142,3 +142,12 @@ Proof.
   intros H. inversion H.
 Qed.
 
+Theorem SSSSev__even : forall n : nat, ev (S (S (S (S n)))) -> ev n.
+Proof.
+  intros n H.
+  inversion H.
+  inversion H1.
+  apply H3.
+Qed.
+
+
