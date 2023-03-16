@@ -109,7 +109,7 @@ Proof.
     + apply E'.
 Qed.
 
-Theorem evSS_ev : forall n:nat, ev (S (S n)) -> ev n.
+Theorem evSS_ev : forall (n : nat), ev (S (S n)) -> ev n.
 Proof.
   intros n H.
   apply ev_inversion in H.
@@ -121,11 +121,20 @@ Proof.
     apply Hev.
 Qed.
 
-Theorem evSS_ev' : forall n : nat, ev (S (S n)) -> ev n.
+Theorem evSS_ev' : forall (n : nat), ev (S (S n)) -> ev n.
 Proof.
   intros n ESS.
   inversion ESS as [| n' E' Heq].
   apply E'.
+Qed.
+
+Theorem just_trying_stuff_outside_the_book : ~ forall n : nat, n < 2.
+Proof.
+  intros contra.
+  pose (Hn := contra 2).
+  inversion Hn.
+  rewrite <- PeanoNat.Nat.leb_le in H0.
+  discriminate H0.
 Qed.
 
 
