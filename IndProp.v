@@ -150,4 +150,12 @@ Proof.
   apply H3.
 Qed.
 
+Theorem ev5_nonsense : ev 5 -> 2 + 2 = 9.
+Proof.
+  intros H5.
+  inversion H5.
+  inversion H0.
+  inversion H2.
+Qed.
+
 
