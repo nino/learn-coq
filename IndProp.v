@@ -158,4 +158,41 @@ Proof.
   inversion H2.
 Qed.
 
+Theorem inversion_ex1 : forall (n m o : nat),
+  [n; m] = [o; o] -> [n] = [m].
+Proof.
+  intros n m o H.
+  inversion H.
+  reflexivity.
+Qed.
 
+Theorem inversion_ex2 : forall n : nat, S n = 0 -> 2 + 2 = 5.
+Proof.
+  intros. inversion H.
+Qed.
+
+(* Recall that, *)
+Definition Even x := exists n : nat, x = double n.
+
+Lemma ev_Even_firsttry : forall n : nat, ev n -> Even n.
+Proof.
+  unfold Even.
+  intros n E.
+  inversion E as [EQ' | n' E' EQ'].
+  - exists 0. reflexivity.
+Abort.
+
+Lemma ev_Even : forall n : nat,
+  ev n -> Even n.
+Proof.
+  intros n E.
+  induction E as [| n' E' IH].
+  - unfold Even. exists 0. reflexivity.
+  - unfold Even in IH.
+    destruct IH as [k Hk].
+    rewrite Hk.
+    unfold Even.
+    exists (S k).
+    simpl.
+    reflexivity.
+Qed.
