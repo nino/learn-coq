@@ -247,3 +247,36 @@ Proof.
     assumption.
 Qed.
 
+Lemma double_is_n_plus_n : forall n : nat,
+  n + n = double n.
+Proof.
+  induction n.
+  - reflexivity.
+  - simpl. rewrite PeanoNat.Nat.add_comm. simpl.
+    rewrite IHn. reflexivity.
+Qed.
+
+Theorem ev_plus_plus : forall n m p : nat,
+  ev (n + m) -> ev (n + p) -> ev (m + p).
+Proof.
+  (* Do this without induction or case analysis, with some tedious
+   * rewriting and clever assertions. Hint: Is (n + m) + (n + p) even? *)
+  intros n m p Hnm Hnp.
+  assert (Hdouble: ev (double n)) by apply ev_double.
+  assert (Hnplusn: n + n = double n) by apply (double_is_n_plus_n).
+  (* I guess technically we did use induction in that one?? *)
+  rewrite <- Hnplusn in Hdouble.
+  assert (Hsum: ev ((n + m) + (n + p))) by apply (ev_sum (n + m) (n + p) Hnm Hnp).
+  replace ((n + m) + (n + p)) with ((n + n) + (m + p)) in Hsum.
+  2: {
+    rewrite <- (PeanoNat.Nat.add_assoc n m (n + p)).
+    rewrite -> (PeanoNat.Nat.add_assoc m n p).
+    rewrite (PeanoNat.Nat.add_comm m n).
+    rewrite <- (PeanoNat.Nat.add_assoc n m p).
+    rewrite -> (PeanoNat.Nat.add_assoc n n (m + p)).
+    reflexivity.
+  }
+  apply (ev_ev__ev (n + n) (m + p)) in Hsum; assumption.
+Qed.
+
+
