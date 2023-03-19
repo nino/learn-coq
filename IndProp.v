@@ -279,4 +279,51 @@ Proof.
   apply (ev_ev__ev (n + n) (m + p)) in Hsum; assumption.
 Qed.
 
+Module Playground.
+
+  Inductive le : nat -> nat -> Prop :=
+    | le_n (n : nat) : le n n
+    | le_S (n m : nat) (H : le n m) : le n (S m).
+
+  Notation "n <= m" := (le n m).
+
+  Theorem test_le1 : 3 <= 3.
+  Proof. apply le_n. Qed.
+
+  Theorem test_le2 : 3 <= 6.
+  Proof.
+    apply le_S.
+    apply le_S.
+    apply le_S.
+    apply le_n.
+  Qed.
+
+  Theorem test_le3 : (2 <= 1) -> 2 + 2 = 5.
+  Proof.
+    intros H.
+    inversion H.
+    inversion H2.
+  Qed.
+
+  Definition lt (n m : nat) := le (S n) m.
+  Notation "m < n" := (lt m n).
+
+End Playground.
+
+Inductive total_relation : nat -> nat -> Prop :=
+  | any_nats (n m : nat) : total_relation n m.
+
+Theorem total_relation_is_total : forall n m : nat, total_relation n m.
+Proof. apply any_nats. Qed.
+
+(* Not sure how to do this *)
+(* Inductive empty_relation : nat -> nat -> Prop := *)
+(*   | no_nats (n m : nat) (H : False) : empty_relation n m. *)
+
+(* Theorem empty_relation_is_empty : forall n m : nat, ~ empty_relation n m. *)
+(* Proof. *)
+(*   intros. intro contra. *)
+(*   destruct n. *)
+(*   - apply (no_nats 0 m) in contra. *)
+
 
