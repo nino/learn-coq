@@ -344,3 +344,32 @@ Proof.
     apply IHHmn.
     assumption.
 Qed.
+
+Theorem O_le_n : forall n : nat, 0 <= n.
+Proof.
+  intros.
+  induction n.
+  - apply le_n.
+  - apply le_S. assumption.
+Qed.
+
+Theorem n_le_m__Sn_le_Sm : forall n m : nat,
+  n <= m -> S n <= S m.
+Proof.
+  intros.
+  induction H.
+  - apply le_n.
+  - apply le_S. assumption.
+Qed.
+
+Theorem Sn_le_Sm__n_le_m : forall n m : nat,
+  S n <= S m -> n <= m.
+Proof.
+  intros.
+  inversion H.
+  - apply le_n.
+  - apply Sn_le_m_then_n_le_m in H1.
+    assumption.
+Qed.
+
+
