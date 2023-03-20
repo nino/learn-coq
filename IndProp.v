@@ -326,4 +326,21 @@ Proof. apply any_nats. Qed.
 (*   destruct n. *)
 (*   - apply (no_nats 0 m) in contra. *)
 
+Lemma Sn_le_m_then_n_le_m : forall n m : nat, S n <= m -> n <= m.
+Proof.
+  intros.
+  induction H.
+  - apply le_S. apply le_n.
+  - apply le_S.
+    apply IHle.
+Qed.
 
+Lemma le_trans : forall m n o : nat, m <= n -> n <= o -> m <= o.
+Proof.
+  intros m n o Hmn Hno.
+  induction Hmn.
+  - assumption.
+  - apply Sn_le_m_then_n_le_m in Hno.
+    apply IHHmn.
+    assumption.
+Qed.
