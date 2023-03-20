@@ -372,4 +372,16 @@ Proof.
     assumption.
 Qed.
 
+Theorem lt_ge_cases : forall n m : nat,
+  n < m \/ n >= m.
+Proof.
+  intros n m.
+  induction n as [| n' IHn'].
+  - destruct m.
+    + right. apply le_n.
+    + left. unfold lt.
+      apply n_le_m__Sn_le_Sm.
+      apply O_le_n.
+Admitted.
+
 
