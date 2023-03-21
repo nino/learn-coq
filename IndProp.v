@@ -407,4 +407,23 @@ Proof.
       apply IHb'.
 Qed.
 
+Theorem plus_le : forall n1 n2 m : nat,
+  n1 + n2 <= m ->
+  n1 <= m /\ n2 <= m.
+Proof.
+  intros n1 n2 m H.
+  split.
+  - induction n2.
+    + rewrite PeanoNat.Nat.add_0_r in H. apply H.
+    + rewrite PeanoNat.Nat.add_comm in H. simpl in H.
+      rewrite PeanoNat.Nat.add_comm in H.
+      apply Sn_le_m_then_n_le_m in H.
+      apply IHn2 in H. apply H.
+  - induction n1.
+    + rewrite PeanoNat.Nat.add_0_l in H. apply H.
+    + simpl in H.
+      apply Sn_le_m_then_n_le_m in H.
+      apply IHn1 in H. apply H.
+Qed.
+
 
