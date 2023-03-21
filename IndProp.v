@@ -144,11 +144,6 @@ Proof.
   discriminate H0.
 Qed.
 
-Theorem one_not_even : ~ ev 1.
-Proof.
-  intros H. inversion H.
-Qed.
-
 Theorem SSSSev__even : forall n : nat, ev (S (S (S (S n)))) -> ev n.
 Proof.
   intros n H.
@@ -384,11 +379,15 @@ Theorem lt_ge_cases : forall n m : nat,
 Proof.
   intros n m.
   induction n as [| n' IHn'].
-  - destruct m.
+  - destruct m as [| m'].
     + right. apply le_n.
-    + left. unfold lt.
-      apply n_le_m__Sn_le_Sm.
-      apply O_le_n.
-Admitted.
+    + left. apply n_le_m__Sn_le_Sm. apply O_le_n.
+  - destruct IHn'.
+    + destruct H as [| m' Hm].
+      * right. apply le_n.
+      * left. apply n_le_m__Sn_le_Sm. assumption.
+    + right. apply le_S.
+      assumption.
+Qed.
 
 
