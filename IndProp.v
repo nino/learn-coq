@@ -128,4 +128,9 @@ Proof.
   apply E'.
 Qed.
 
+Theorem one_not_even : ~ ev 1.
+Proof.
+  intros H.
+  inversion H.
+Qed.
 
