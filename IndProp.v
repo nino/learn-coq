@@ -390,4 +390,21 @@ Proof.
       assumption.
 Qed.
 
+Theorem le_plus_l : forall a b : nat,
+  a <= a + b.
+Proof.
+  induction b as [| b' IHb'].
+  - rewrite PeanoNat.Nat.add_0_r. apply le_n.
+  - destruct a as [ | a'].
+    + simpl. apply O_le_n.
+    + simpl. apply le_S.
+      replace (a' + S b') with (S a' + b').
+      2: {
+        simpl. rewrite (PeanoNat.Nat.add_comm a' (S b')).
+        simpl. rewrite (PeanoNat.Nat.add_comm a' b').
+        reflexivity.
+      }
+      apply IHb'.
+Qed.
+
 
