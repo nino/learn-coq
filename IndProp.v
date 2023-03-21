@@ -109,7 +109,7 @@ Proof.
     + apply E'.
 Qed.
 
-Theorem evSS_ev : forall n:nat, ev (S (S n)) -> ev n.
+Theorem evSS_ev : forall (n : nat), ev (S (S n)) -> ev n.
 Proof.
   intros n H.
   apply ev_inversion in H.
@@ -121,16 +121,274 @@ Proof.
     apply Hev.
 Qed.
 
-Theorem evSS_ev' : forall n : nat, ev (S (S n)) -> ev n.
+Theorem evSS_ev' : forall (n : nat), ev (S (S n)) -> ev n.
 Proof.
   intros n ESS.
   inversion ESS as [| n' E' Heq].
   apply E'.
 Qed.
 
+
 Theorem one_not_even : ~ ev 1.
 Proof.
   intros H.
   inversion H.
 Qed.
+
+Theorem just_trying_stuff_outside_the_book : ~ forall n : nat, n < 2.
+Proof.
+  intros contra.
+  pose (Hn := contra 2).
+  inversion Hn.
+  rewrite <- PeanoNat.Nat.leb_le in H0.
+  discriminate H0.
+Qed.
+
+Theorem one_not_even : ~ ev 1.
+Proof.
+  intros H. inversion H.
+Qed.
+
+Theorem SSSSev__even : forall n : nat, ev (S (S (S (S n)))) -> ev n.
+Proof.
+  intros n H.
+  inversion H.
+  inversion H1.
+  apply H3.
+Qed.
+
+Theorem ev5_nonsense : ev 5 -> 2 + 2 = 9.
+Proof.
+  intros H5.
+  inversion H5.
+  inversion H0.
+  inversion H2.
+Qed.
+
+Theorem inversion_ex1 : forall (n m o : nat),
+  [n; m] = [o; o] -> [n] = [m].
+Proof.
+  intros n m o H.
+  inversion H.
+  reflexivity.
+Qed.
+
+Theorem inversion_ex2 : forall n : nat, S n = 0 -> 2 + 2 = 5.
+Proof.
+  intros. inversion H.
+Qed.
+
+(* Recall that, *)
+Definition Even x := exists n : nat, x = double n.
+
+Lemma ev_Even_firsttry : forall n : nat, ev n -> Even n.
+Proof.
+  unfold Even.
+  intros n E.
+  inversion E as [EQ' | n' E' EQ'].
+  - exists 0. reflexivity.
+Abort.
+
+Lemma ev_Even : forall n : nat,
+  ev n -> Even n.
+Proof.
+  intros n E.
+  induction E as [| n' E' IH].
+  - unfold Even. exists 0. reflexivity.
+  - unfold Even in IH.
+    destruct IH as [k Hk].
+    rewrite Hk.
+    unfold Even.
+    exists (S k).
+    simpl.
+    reflexivity.
+Qed.
+
+Theorem ev_Even_iff : forall n : nat, ev n <-> Even n.
+Proof.
+  intros n. split.
+  - apply ev_Even.
+  - unfold Even.
+    intros [k Hk].
+    rewrite Hk.
+    apply ev_double.
+Qed.
+
+Theorem ev_sum : forall n m, ev n -> ev m -> ev (n + m).
+Proof.
+  intros n m Hn Hm.
+  induction Hn as [| n' En IHn].
+  - simpl. apply Hm.
+  - simpl. apply ev_SS. apply IHn.
+Qed.
+
+Inductive ev' : nat -> Prop :=
+  | ev'_0 : ev' 0
+  | ev'_2 : ev' 2
+  | ev'_sum n m (Hn : ev' n) (Hm : ev' m) : ev' (n + m).
+
+Theorem ev'_ev : forall n, ev' n <-> ev n.
+Proof.
+  split.
+  - intros Hev'.
+    induction Hev' as [ | | n' m' Hn' Hm' Hev' IH].
+    + apply ev_0.
+    + apply (ev_SS 0 ev_0).
+    + apply (ev_sum n' m' Hm' IH).
+      (* I might have fucked up some of those names in the induction *)
+  - intros Hev.
+    induction Hev as [ | n' Hn' IH].
+    + apply ev'_0.
+    + replace (S (S n')) with (2 + n') by reflexivity.
+      apply (ev'_sum 2 n' ev'_2 IH).
+Qed.
+
+Theorem ev_ev__ev : forall n m, ev (n + m) -> ev n -> ev m.
+Proof.
+  intros n m Hsum Hn.
+  induction Hn as [| n' Hn' IH].
+  - simpl in Hsum. assumption.
+  - apply IH.
+    simpl in Hsum.
+    inversion Hsum.
+    assumption.
+Qed.
+
+Lemma double_is_n_plus_n : forall n : nat,
+  n + n = double n.
+Proof.
+  induction n.
+  - reflexivity.
+  - simpl. rewrite PeanoNat.Nat.add_comm. simpl.
+    rewrite IHn. reflexivity.
+Qed.
+
+Theorem ev_plus_plus : forall n m p : nat,
+  ev (n + m) -> ev (n + p) -> ev (m + p).
+Proof.
+  (* Do this without induction or case analysis, with some tedious
+   * rewriting and clever assertions. Hint: Is (n + m) + (n + p) even? *)
+  intros n m p Hnm Hnp.
+  assert (Hdouble: ev (double n)) by apply ev_double.
+  assert (Hnplusn: n + n = double n) by apply (double_is_n_plus_n).
+  (* I guess technically we did use induction in that one?? *)
+  rewrite <- Hnplusn in Hdouble.
+  assert (Hsum: ev ((n + m) + (n + p))) by apply (ev_sum (n + m) (n + p) Hnm Hnp).
+  replace ((n + m) + (n + p)) with ((n + n) + (m + p)) in Hsum.
+  2: {
+    rewrite <- (PeanoNat.Nat.add_assoc n m (n + p)).
+    rewrite -> (PeanoNat.Nat.add_assoc m n p).
+    rewrite (PeanoNat.Nat.add_comm m n).
+    rewrite <- (PeanoNat.Nat.add_assoc n m p).
+    rewrite -> (PeanoNat.Nat.add_assoc n n (m + p)).
+    reflexivity.
+  }
+  apply (ev_ev__ev (n + n) (m + p)) in Hsum; assumption.
+Qed.
+
+Module Playground.
+
+  Inductive le : nat -> nat -> Prop :=
+    | le_n (n : nat) : le n n
+    | le_S (n m : nat) (H : le n m) : le n (S m).
+
+  Notation "n <= m" := (le n m).
+
+  Theorem test_le1 : 3 <= 3.
+  Proof. apply le_n. Qed.
+
+  Theorem test_le2 : 3 <= 6.
+  Proof.
+    apply le_S.
+    apply le_S.
+    apply le_S.
+    apply le_n.
+  Qed.
+
+  Theorem test_le3 : (2 <= 1) -> 2 + 2 = 5.
+  Proof.
+    intros H.
+    inversion H.
+    inversion H2.
+  Qed.
+
+  Definition lt (n m : nat) := le (S n) m.
+  Notation "m < n" := (lt m n).
+
+End Playground.
+
+Inductive total_relation : nat -> nat -> Prop :=
+  | any_nats (n m : nat) : total_relation n m.
+
+Theorem total_relation_is_total : forall n m : nat, total_relation n m.
+Proof. apply any_nats. Qed.
+
+(* Not sure how to do this *)
+(* Inductive empty_relation : nat -> nat -> Prop := *)
+(*   | no_nats (n m : nat) (H : False) : empty_relation n m. *)
+
+(* Theorem empty_relation_is_empty : forall n m : nat, ~ empty_relation n m. *)
+(* Proof. *)
+(*   intros. intro contra. *)
+(*   destruct n. *)
+(*   - apply (no_nats 0 m) in contra. *)
+
+Lemma Sn_le_m_then_n_le_m : forall n m : nat, S n <= m -> n <= m.
+Proof.
+  intros.
+  induction H.
+  - apply le_S. apply le_n.
+  - apply le_S.
+    apply IHle.
+Qed.
+
+Lemma le_trans : forall m n o : nat, m <= n -> n <= o -> m <= o.
+Proof.
+  intros m n o Hmn Hno.
+  induction Hmn.
+  - assumption.
+  - apply Sn_le_m_then_n_le_m in Hno.
+    apply IHHmn.
+    assumption.
+Qed.
+
+Theorem O_le_n : forall n : nat, 0 <= n.
+Proof.
+  intros.
+  induction n.
+  - apply le_n.
+  - apply le_S. assumption.
+Qed.
+
+Theorem n_le_m__Sn_le_Sm : forall n m : nat,
+  n <= m -> S n <= S m.
+Proof.
+  intros.
+  induction H.
+  - apply le_n.
+  - apply le_S. assumption.
+Qed.
+
+Theorem Sn_le_Sm__n_le_m : forall n m : nat,
+  S n <= S m -> n <= m.
+Proof.
+  intros.
+  inversion H.
+  - apply le_n.
+  - apply Sn_le_m_then_n_le_m in H1.
+    assumption.
+Qed.
+
+Theorem lt_ge_cases : forall n m : nat,
+  n < m \/ n >= m.
+Proof.
+  intros n m.
+  induction n as [| n' IHn'].
+  - destruct m.
+    + right. apply le_n.
+    + left. unfold lt.
+      apply n_le_m__Sn_le_Sm.
+      apply O_le_n.
+Admitted.
+
 
