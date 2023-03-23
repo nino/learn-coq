@@ -318,15 +318,12 @@ Inductive total_relation : nat -> nat -> Prop :=
 Theorem total_relation_is_total : forall n m : nat, total_relation n m.
 Proof. apply any_nats. Qed.
 
-(* Not sure how to do this *)
-(* Inductive empty_relation : nat -> nat -> Prop := *)
-(*   | no_nats (n m : nat) (H : False) : empty_relation n m. *)
+Inductive empty_relation : nat -> nat -> Prop :=.
 
-(* Theorem empty_relation_is_empty : forall n m : nat, ~ empty_relation n m. *)
-(* Proof. *)
-(*   intros. intro contra. *)
-(*   destruct n. *)
-(*   - apply (no_nats 0 m) in contra. *)
+Theorem empty_relation_is_empty : forall n m : nat, ~ empty_relation n m.
+Proof.
+  intros. intro contra. inversion contra.
+Qed.
 
 Lemma Sn_le_m_then_n_le_m : forall n m : nat, S n <= m -> n <= m.
 Proof.
@@ -390,6 +387,21 @@ Proof.
       assumption.
 Qed.
 
+Theorem le_gt_cases : forall n m : nat,
+  n <= m \/ n > m.
+Proof.
+  intros n m.
+  induction n as [| n' IHn'].
+  - left. apply O_le_n.
+  - destruct IHn' as [H | H].
+    + inversion H.
+      * right. apply le_n.
+      * left. apply n_le_m__Sn_le_Sm. apply H0.
+    + right. unfold gt in *. unfold lt in *.
+      apply le_S. apply H.
+Qed.
+
+
 Theorem le_plus_l : forall a b : nat,
   a <= a + b.
 Proof.
@@ -405,6 +417,14 @@ Proof.
         reflexivity.
       }
       apply IHb'.
+Qed.
+
+Lemma lt_le : forall n m : nat,
+  n < m -> n <= m.
+Proof.
+  intros n m Hlt.
+  unfold lt in Hlt.
+  apply Sn_le_m_then_n_le_m in Hlt. apply Hlt.
 Qed.
 
 Theorem plus_le : forall n1 n2 m : nat,
@@ -424,6 +444,71 @@ Proof.
     + simpl in H.
       apply Sn_le_m_then_n_le_m in H.
       apply IHn1 in H. apply H.
+Qed.
+
+Lemma le_plus_on_both_sides : forall n m k : nat,
+  n <= m -> n + k <= m + k.
+Proof.
+  intros n m k H.
+  induction k as [| k' IHk].
+  - rewrite PeanoNat.Nat.add_0_r.
+    rewrite (PeanoNat.Nat.add_0_r m).
+    apply H.
+  - rewrite (PeanoNat.Nat.add_comm n).
+    rewrite (PeanoNat.Nat.add_comm m).
+    simpl.
+    rewrite (PeanoNat.Nat.add_comm k').
+    rewrite (PeanoNat.Nat.add_comm k').
+    apply n_le_m__Sn_le_Sm. apply IHk.
+Qed.
+
+Lemma replace_left_with_smaller_addend : forall n n' m p : nat,
+  n' <= n -> n + m <= p -> n' + m <= p.
+Proof.
+  intros n n' m p Hnn H.
+  induction n'.
+  - simpl. apply plus_le in H. destruct H as [Hn Hm]. apply Hm.
+  - apply (le_plus_on_both_sides (S n') n m) in Hnn.
+    Check le_trans.
+    apply (le_trans (S n' + m) (n + m) p Hnn H).
+Qed.
+
+Lemma le_cancel_plus : forall k p q : nat,
+  k + p <= k + q -> p <= q.
+Proof.
+  intros k p q H.
+  induction k.
+  - simpl in H. apply H.
+  - simpl in H. apply Sn_le_Sm__n_le_m in H.
+    apply IHk in H. apply H.
+Qed.
+
+Theorem add_le_cases : forall n m p q : nat,
+  n + m <= p + q -> n <= p \/ m <= q.
+Proof.
+  intros n m p q H.
+  induction n as [| n' IHn].
+  - left. apply O_le_n.
+  - destruct (le_gt_cases (S n') p) as [H1 | H1].
+    + left. apply H1.
+    + right. unfold gt in H1. apply lt_le in H1.
+      apply (replace_left_with_smaller_addend (S n') p m (p + q) H1) in H.
+      apply le_cancel_plus in H. apply H.
+Qed.
+
+Theorem plus_le_compat_l : forall n m p : nat,
+  n <= m -> p + n <= p + m.
+Proof.
+  intros.
+  rewrite (PeanoNat.Nat.add_comm p).
+  rewrite (PeanoNat.Nat.add_comm p).
+  now apply le_plus_on_both_sides.
+Qed.
+
+Theorem plus_le_compat_r : forall n m p,
+  n <= m -> n + p <= m + p.
+Proof.
+  apply le_plus_on_both_sides.
 Qed.
 
 
