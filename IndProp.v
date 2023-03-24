@@ -511,4 +511,42 @@ Proof.
   apply le_plus_on_both_sides.
 Qed.
 
+Theorem le_plus_trans : forall n m p : nat,
+  n <= m ->
+  n <= m + p.
+Proof.
+  intros n m p H.
+  induction p.
+  - rewrite (PeanoNat.Nat.add_comm m).
+    simpl. apply H.
+  - rewrite PeanoNat.Nat.add_comm.
+    simpl.
+    rewrite PeanoNat.Nat.add_comm.
+    apply le_S in IHp. apply IHp.
+Qed.
+
+Theorem n_lt_m__n_le_m : forall n m : nat,
+  n < m ->
+  n <= m.
+Proof. now apply lt_le. Qed.
+
+Theorem plus_lt : forall n1 n2 m : nat,
+  n1 + n2 < m ->
+  n1 < m /\ n2 < m.
+Proof.
+  intros n1 n2 m H.
+  unfold lt in *.
+  split.
+  - replace (S (n1 + n2)) with (S n1 + n2) in H by reflexivity.
+    apply plus_le in H.
+    destruct H. assumption.
+  - replace (S (n1 + n2)) with (n1 + S n2) in H.
+    2: {
+      rewrite PeanoNat.Nat.add_comm. simpl.
+      rewrite PeanoNat.Nat.add_comm. reflexivity.
+    }
+    apply plus_le in H.
+    destruct H. assumption.
+Qed.
+
 
