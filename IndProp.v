@@ -549,4 +549,19 @@ Proof.
     destruct H. assumption.
 Qed.
 
+Theorem leb_complete : forall n m : nat,
+  n <=? m = true -> n <= m.
+Proof.
+  intros n m H.
+  induction n.
+  - apply O_le_n.
+  - destruct m.
+    + discriminate H.
+    +
 
+
+Theorem leb_correct : ∀ n m,
+  n ≤ m →
+  n <=? m = true.
+Hint: May be easiest to prove by induction on m.
+Proof.
