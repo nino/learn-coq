@@ -479,7 +479,7 @@ Admitted.
 (* Let's get back to this some other time *)
 
 (* Applying theorems to arguments *)
-Set Printing Parentheses.
+(* Set Printing Parentheses. *)
 
 Lemma add_comm3 : forall x y z, x + (y + z) = (z + y) + x.
 Proof.
@@ -527,4 +527,26 @@ Proof.
   (* Ok this is pretty cool *)
 Qed.
 
+Axiom functional_extensionality :
+  forall {X Y : Type} {f g : X -> Y},
+  (forall (x:X), f x = g x) -> f = g.
+
+Fixpoint rev_append {X} (l1 l2 : list X) : list X :=
+  match l1 with
+  | [] => l2
+  | x :: l1' => rev_append l1' (x :: l2)
+  end.
+
+Definition tr_rev {X} (l : list X) : list X :=
+  rev_append l [].
+
+Theorem tr_rev_correct : forall X, @tr_rev X = @rev X.
+Proof.
+  intros X.
+  apply functional_extensionality.
+  intros l.
+  induction l as [| hd tl IHl].
+  - reflexivity.
+  - simpl.
+Abort.
 
