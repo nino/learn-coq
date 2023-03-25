@@ -658,22 +658,32 @@ End R.
 
 Inductive subseq : list nat -> list nat -> Prop :=
   | nil_subseq (l : list nat) : subseq [] l
-  | hd_match (l1 : list nat) (l2 : list nat)
-      (H: hd_error l1 = hd_error l2 /\ subseq (tl l1) (tl l2)) :
-      subseq l1 l2
-  | hd_mismatch (l1 : list nat) (l2 : list nat)
-      (H: hd_error l1 <> hd_error l2 /\ subseq l1 (tl l2)) :
-      subseq l1 l2.
+  | hd_match (l1 l2 : list nat) (hd : nat) (H: subseq l1 l2) :
+      subseq (hd :: l1) (hd :: l2)
+  | hd_mismatch (l1 l2 : list nat) (hd : nat) (H: subseq l1 l2) :
+      subseq l1 (hd :: l2).
+
+Infix "<@" := subseq (at level 80).
 
 Theorem subseq_refl : forall l : list nat,
   subseq l l.
 Proof.
   intros l.
   induction l as [| hd tl IH].
-  - constructor.
-  - constructor. simpl.
-    split.
-    + reflexivity.
-    + apply IH.
+  - apply nil_subseq.
+  - apply hd_match. apply IH.
 Qed.
+
+Set Printing Parentheses.
+
+Theorem subseq_app : forall l1 l2 l3 : list nat,
+  l1 <@ l2 -> l1 <@ (l2 ++ l3).
+Proof.
+  intros l1 l2 l3 H.
+  induction H as [ l2 | l1 l2 hd H IH | l1 l2 hd H IH].
+  - apply nil_subseq.
+  - simpl. apply hd_match. apply IH.
+  - simpl. apply hd_mismatch. apply IH.
+Qed.
+
 
