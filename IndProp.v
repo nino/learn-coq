@@ -654,4 +654,15 @@ Module R.
   Qed.
   (* Not sure why I had to / did do `destruct b` and then `induction b` *)
 
+End R.
+
+Inductive subseq : list nat -> list nat -> Prop :=
+  | nil_subseq (l : list nat) : subseq [] l
+  | hd_match (l1 : list nat) (l2 : list nat)
+      (H: hd_error l1 = hd_error l2 /\ subseq (tl l1) (tl l2)) :
+      subseq l1 l2
+  | hd_mismatch (l1 : list nat) (l2 : list nat)
+      (H: hd_error l1 <> hd_error l2 /\ subseq l1 (tl l2)) :
+      subseq l1 l2.
+
 
