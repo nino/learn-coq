@@ -665,4 +665,15 @@ Inductive subseq : list nat -> list nat -> Prop :=
       (H: hd_error l1 <> hd_error l2 /\ subseq l1 (tl l2)) :
       subseq l1 l2.
 
+Theorem subseq_refl : forall l : list nat,
+  subseq l l.
+Proof.
+  intros l.
+  induction l as [| hd tl IH].
+  - constructor.
+  - constructor. simpl.
+    split.
+    + reflexivity.
+    + apply IH.
+Qed.
 
