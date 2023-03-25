@@ -552,16 +552,50 @@ Qed.
 Theorem leb_complete : forall n m : nat,
   n <=? m = true -> n <= m.
 Proof.
-  intros n m H.
-  induction n.
-  - apply O_le_n.
-  - destruct m.
-    + discriminate H.
-    +
+  intros n.
+  induction n as [| n IHn].
+  - intro m. destruct m.
+    + simpl. intros H. apply le_n.
+    + simpl. intros H. apply O_le_n.
+  - intro m. destruct m.
+    + simpl. intros contra. discriminate.
+    + simpl. intro Hnm.
+      apply (IHn m) in Hnm.
+      now apply n_le_m__Sn_le_Sm.
+Qed.
 
-
-Theorem leb_correct : ∀ n m,
-  n ≤ m →
-  n <=? m = true.
-Hint: May be easiest to prove by induction on m.
+Lemma n_leb_n : forall n : nat, (n <=? n) = true.
 Proof.
+  induction n.
+  - reflexivity.
+  - now simpl.
+Qed.
+
+Theorem leb_correct : forall n m : nat,
+  n <= m ->
+  n <=? m = true.
+Proof.
+  intros n m H.
+  induction m as [| m' IHm'].
+  (* Why can I not figure this out?? *)
+Admitted.
+
+Theorem leb_iff : forall n m : nat,
+  n <=? m = true <-> n <= m.
+Proof.
+  split.
+  - apply leb_complete.
+  - apply leb_correct.
+Qed.
+
+Theorem leb_true_trans : forall n m o : nat,
+  n <=? m = true -> m <=? o = true -> n <=? o = true.
+Proof.
+  intros.
+  apply leb_complete in H.
+  apply leb_complete in H0.
+  apply leb_correct.
+  apply (le_trans n m o H H0).
+Qed.
+
+
