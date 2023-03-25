@@ -598,4 +598,60 @@ Proof.
   apply (le_trans n m o H H0).
 Qed.
 
+Module R.
+
+  (* I guess this is a 3-way relation *)
+  Inductive R : nat -> nat -> nat -> Prop :=
+    | c1 : R 0 0 0
+    | c2 m n o (H : R m n o) : R (S m) n (S o)
+    | c3 m n o (H : R m n o) : R m (S n) (S o)
+    | c4 m n o (H : R (S m) (S n) (S (S o))) : R m n o
+    | c5 m n o (H : R m n o) : R n m o.
+
+  Example R112 : R 1 1 2.
+  Proof.
+    repeat constructor.
+  Qed.
+
+  (* If we dropped constructor c5 from the definition of R, would the set
+   * of provable propositions change? Briefly (1 sentence) explain your
+   * answer. *)
+  (* I don't think so. *)
+
+  (* If we dropped constructor c4 from the definition of R, would the
+   * set of provable propositions change? Briefly (1 sentence)
+   * explain your answer. *)
+  (* I don't think so. You can derive this one from 2 and 3 *)
+
+  (* The relation R above actually encodes a familiar function. Figure out which function; then state and prove this equivalence in Coq. *)
+  (* Is R a b c true if a + b = c? *)
+
+  Definition fR : nat -> nat -> nat := add.
+
+  Theorem R_equiv_fR : forall a b c, R a b c <-> fR a b = c.
+  Proof.
+    unfold fR.
+    intros a b c.
+    split; intros H.
+    - induction H.
+      + reflexivity.
+      + simpl. f_equal. apply IHR.
+      + rewrite Nat.add_comm. simpl. rewrite Nat.add_comm. f_equal. apply IHR.
+      + simpl in IHR.
+        rewrite Nat.add_comm in IHR.
+        simpl in IHR. rewrite Nat.add_comm in IHR.
+        (* This is dumb but it works: *)
+        inversion IHR. rewrite Nat.add_comm. reflexivity.
+      + now rewrite Nat.add_comm.
+    - destruct H. (* Not sure how this step worked, but it did?? *)
+      induction a; destruct b.
+      + constructor.
+      + constructor. induction b; try constructor.
+        apply IHb.
+      + rewrite Nat.add_0_r in *.
+        constructor. apply IHa.
+      + simpl. constructor. apply IHa.
+  Qed.
+  (* Not sure why I had to / did do `destruct b` and then `induction b` *)
+
 
