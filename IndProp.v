@@ -763,3 +763,42 @@ Module bin3.
     | B1 : bin -> bin.
 End bin3.
 
+Inductive reg_exp (T : Type) : Type :=
+  | EmptySet
+  | EmptyStr
+  | Char (t : T)
+  | App (r1 r2 : reg_exp T)
+  | Union (r1 r2 : reg_exp T)
+  | Star (r : reg_exp T).
+
+Arguments EmptySet {T}.
+Arguments EmptyStr {T}.
+Arguments Char {T} _.
+Arguments App {T} _ _.
+Arguments Union {T} _ _.
+Arguments Star {T} _.
+
+Reserved Notation "S =~ re" (at level 80).
+
+Inductive exp_match {T} : list T -> reg_exp T -> Prop :=
+  | MEmpty : [] =~ EmptyStr
+  | MChar x : [x] =~ (Char x)
+  | MApp s1 re1 s2 re2 (H1: s1 =~ re1) (H2: s2 =~ re2)
+      : (s1 ++ s2) =~ (App re1 re2)
+  | MUnionL s re1 re2 (H1: s =~ re1) : s =~ (Union re1 re2)
+  | MUnionR s re1 re2 (H1: s =~ re2) : s =~ (Union re1 re2)
+  | MStar0 re : [] =~ (Star re)
+  | MStarApp s1 s2 re (H1: s1 =~ re) (H2: s2 =~ (Star re))
+      : (s1 ++ s2) =~ (Star re)
+
+      where "s =~ re" := (exp_match s re).
+
+Example reg_exp_ex1 : [1] =~ Char 1.
+Proof. apply MChar. Qed.
+
+Example reg_exp_ex2 : [1; 2] =~ App (Char 1) (Char 2).
+Proof.
+  apply (MApp [1]); apply MChar.
+Qed.
+
+
