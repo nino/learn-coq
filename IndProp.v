@@ -842,3 +842,11 @@ Proof.
   inversion H.
 Qed.
 
+Lemma MUnion' : forall (T : Type) (s : list T) (re1 re2 : reg_exp T),
+  s =~ re1 \/ s =~ re2 ->
+  s =~ Union re1 re2.
+Proof.
+  intros T s re1 re2 [H1 | H2].
+  - now apply MUnionL.
+  - now apply MUnionR.
+Qed.
