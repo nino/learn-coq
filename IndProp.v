@@ -686,4 +686,58 @@ Proof.
   - simpl. apply hd_mismatch. apply IH.
 Qed.
 
-
+Theorem subseq_trans : forall A B C : list nat,
+  A <@ B -> B <@ C ->
+  A <@ C.
+Proof.
+  intros A B C.
+  generalize dependent B.
+  generalize dependent A.
+  induction C as [| hd tl IHC ].
+  - (* C = [] *) intros A B H_AB H_BC.
+    (* since H_BC : B <@ [], we can do *)
+    inversion H_BC.
+    (* and now H: B = [] *)
+    rewrite <- H in H_AB (* so now H_AB: A <@ [] *).
+    inversion H_AB.
+    apply nil_subseq.
+  - (* C = hd :: tl *) intros A B H_AB H_BC.
+    inversion H_BC as [ | B' C' hd' H_BC' HB' HC' | B' C' hd' H_BC' HB' HC' ].
+    + (* nil_subseq *) rewrite <- H in H_AB. inversion H_AB. apply nil_subseq.
+    + (* hd_match *)
+      (* Tidy: *)
+      rewrite -> HC' in * (* since hd' = hd, use hd everywhere *).
+      clear HC' (* hd' now unused *).
+      inversion H_AB as [ | A'' B'' hd'' H_AB'' HA'' HB'' | A'' B'' hd'' H_AB'' HA'' HB'' ].
+      * apply nil_subseq.
+      * (* hd_match *)
+        assert (Hhdsame: hd = hd'').
+        { rewrite <- HB'' in HB'.
+          injection HB'.
+          intros. assumption. }
+        rewrite <- Hhdsame in *.
+        clear Hhdsame.
+        (* Now all heads are hd *)
+        assert (HBsame: B' = B'').
+        { rewrite <- HB'' in HB'.
+          injection HB'. intros. assumption. }
+        rewrite <- HBsame in *. clear HBsame.
+        apply hd_match.
+        apply (IHC A'' B' H_AB'' H_BC').
+      * (* hd_mismatch *)
+        (* Tidy: *)
+        clear HA''. clear A''.
+        assert (Hhdsame: hd = hd'').
+        { rewrite <- HB'' in HB'. injection HB'. intros. assumption. }
+        rewrite <- Hhdsame in *. clear Hhdsame. clear hd''.
+        assert (HBsame: B' = B'').
+        { rewrite <- HB'' in HB'.
+          injection HB'. intros. assumption. }
+        rewrite <- HBsame in *. clear HBsame. clear B''.
+        apply hd_mismatch.
+        apply (IHC A B' H_AB'' H_BC').
+    + (* hd_mismatch *)
+      (* Tidy: *) clear HC'. clear hd'.
+      apply hd_mismatch.
+      apply (IHC A B H_AB H_BC').
+Qed.
