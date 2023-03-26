@@ -801,4 +801,44 @@ Proof.
   apply (MApp [1]); apply MChar.
 Qed.
 
+Example reg_exp_ex3 : ~ ([1; 2] =~ Char 1).
+Proof.
+  intro H.
+  inversion H.
+Qed.
+
+Fixpoint reg_exp_of_list {T} (l : list T) :=
+  match l with
+  | [] => EmptyStr
+  | x :: l' => App (Char x) (reg_exp_of_list l')
+  end.
+
+Example reg_exp_ex4 : [1; 2; 3] =~ reg_exp_of_list [1; 2; 3].
+Proof.
+  simpl.
+  apply (MApp [1]).
+  { apply MChar. }
+  apply (MApp [2]).
+  { apply MChar. }
+  apply (MApp [3]).
+  { apply MChar. }
+  apply MEmpty.
+Qed.
+
+Lemma MStar1 :
+  forall T s (re : reg_exp T),
+  s =~ re ->
+  s =~ Star re.
+Proof.
+  intros T s re H.
+  rewrite <- (List.app_nil_r s).
+  apply (MStarApp s [] re H (MStar0 re)).
+Qed.
+
+Lemma empty_is_empty : forall T (s : list T),
+  ~ (s =~ EmptySet).
+Proof.
+  intros T s H.
+  inversion H.
+Qed.
 
