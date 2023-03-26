@@ -741,3 +741,25 @@ Proof.
       apply hd_mismatch.
       apply (IHC A B H_AB H_BC').
 Qed.
+
+Module bin1.
+  Inductive bin : Type :=
+    | Z
+    | B0 (n : bin)
+    | B1 (n : bin).
+End bin1.
+
+Module bin2.
+  Inductive bin : Type :=
+    | Z : bin
+    | B0 (n : bin) : bin
+    | B1 (n : bin) : bin.
+End bin2.
+
+Module bin3.
+  Inductive bin : Type :=
+    | Z : bin
+    | B0 : bin -> bin
+    | B1 : bin -> bin.
+End bin3.
+
